@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtTagDao">
+
+
+    <select id="get" resultType="BdxtTag">
+        SELECT
+        *
+        FROM bdxt_tag a
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="BdxtTag">
+        SELECT
+        *
+        FROM bdxt_tag a
+
+        <where>
+
+            <if test="tagName != null and tagName != ''">
+                AND a.tag_name = #{tagName}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <update id="delete">
+		DELETE FROM bdxt_tag
+		WHERE id = #{id}
+	</update>
+    <!--查询用户标签列表信息-->
+    <select id="queryUserTagListById" resultType="BdxtTag" parameterType="java.util.Map">
+        SELECT
+        sd.id as dictId,
+        sd.name as dictName,
+        IFNULL(GROUP_CONCAT(
+        DISTINCT t.id ORDER BY
+        t.create_time DESC
+        ),"") AS tagId,
+        IFNULL(GROUP_CONCAT(
+        DISTINCT t.tag_name ORDER BY
+        t.create_time DESC
+        ),"") AS tagName
+        FROM
+        bdxt_type_tag tt
+        LEFT JOIN bdxt_dict sd ON sd.id = tt.bxdt_type
+        LEFT JOIN bdxt_tag t ON t.id=tt.bxdt_tag
+        WHERE
+        1 = 1
+        <if test="userId!=null and userId!=''">
+            AND tt.bxdt_user_id =#{userId}
+        </if>
+        <if test="dictId!=null and dictId!=''">
+            AND tt.bxdt_type =#{dictId}
+            AND tt.is_recommended=1
+        </if>
+        AND tt.status=1
+        GROUP BY tt.bxdt_type
+        ORDER BY sd.create_time DESC
+    </select>
+
+    <!--获取推荐标签列表 -->
+    <select id="queryTagInfo" resultType="BdxtTag">
+        SELECT * from bdxt_tag t
+        <where>
+            and t.status=1
+            and t.is_recommended=1
+            <if test="tagName != null and tagName != ''">
+                AND t.tag_name = #{tagName}
+            </if>
+            <if test="status != null and status != ''">
+                AND t.status = #{status}
+            </if>
+        </where>
+        ORDER BY t.sort
+    </select>
+    <!--app 保存标签信息 -->
+    <insert id="saveTagInfo" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.foreveross.webbase.bdxt.entity.BdxtTag">
+        <selectKey keyProperty="id" resultType="String" order="BEFORE">
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        INSERT INTO bdxt_tag(
+        id,
+        tag_name,
+        status,
+        create_time,
+        update_time,
+        create_by,
+        update_by
+        ) VALUES (
+        #{id},
+        #{tagName},
+        1,
+        now(),
+        now(),
+        #{createUserBy},
+        #{updateUserBy}
+        )
+    </insert>
+    <!--查询该标签是否存在 -->
+    <select id="queryTagTotal" resultType="java.lang.String">
+     SELECT id FROM bdxt_tag WHERE tag_name=#{tagName} and status=1
+    </select>
+
+    <!--更新标签信息 -->
+    <update id="updateTagInfoById" parameterType="java.util.List">
+        <foreach collection="list" item="tag" index="index" separator=";">
+            UPDATE bdxt_tag
+            <set>
+                status=#{tag.status},
+                update_by=#{tag.updateUserBy},
+                update_time=now()
+            </set>
+            WHERE id=#{tag.id}
+        </foreach>
+    </update>
+
+</mapper>

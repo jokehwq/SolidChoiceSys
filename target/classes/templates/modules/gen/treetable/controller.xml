@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<name>controller</name>
+	<filePath>src/main/java/${packageName}/${moduleName}/${subModuleName}/web</filePath>
+	<fileName>${ClassName}Controller.java</fileName>
+	<content><![CDATA[
+/**
+ * Copyright &copy; 2012-2016 <a href="https://git.oschina.net/zdw2016/webbase5">Webbase</a> All rights reserved.
+ */
+package ${packageName}.${moduleName}<#if subModuleName != "">.${subModuleName}</#if>.web;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.foreveross.webbase.common.config.Global;
+import com.foreveross.webbase.common.web.BaseController;
+import com.foreveross.webbase.common.utils.StringUtils;
+import ${packageName}.${moduleName}<#if subModuleName != "">.${subModuleName}</#if>.entity.${ClassName};
+import ${packageName}.${moduleName}<#if subModuleName != "">.${subModuleName}</#if>.service.${ClassName}Service;
+
+/**
+ * ${functionName}Controller
+ * @author ${functionAuthor}
+ * @version ${functionVersion}
+ */
+@Controller
+@RequestMapping(value = "${r"${adminPath}"}/${urlPrefix}")
+public class ${ClassName}Controller extends BaseController {
+
+	@Autowired
+	private ${ClassName}Service ${className}Service;
+	
+	@RequiresPermissions("${permissionPrefix}:view")
+	@RequestMapping(value = {"list", ""})
+	public String list(${ClassName} ${className}) {
+		List<${ClassName}> list = ${className}Service.findList(${className}); 
+		attr("list", list);
+		return "${viewPrefix}List";
+	}
+
+	@RequiresPermissions("${permissionPrefix}:view")
+	@RequestMapping(value = "form")
+	public String form(String id,String parentId) {
+		
+		${ClassName} ${className}=null;
+		if(StringUtils.isNotEmpty(id)) {
+			${className}=${className}Service.get(id);
+			${className}.setParent(${className}Service.get(${className}.getParentId()));
+		} else {
+			${className}=new ${ClassName}();
+			${className}.setParent(${className}Service.get(parentId));
+			List<${ClassName}> list = ${className}Service.findList(${className});
+			if(list.isEmpty()) {
+				${className}.setSort(10);
+			} else {
+				${className}.setSort(list.get(list.size()-1).getSort()+10);
+			}
+		}
+		
+		attr("${className}", ${className});
+		return "${viewPrefix}Form";
+	}
+
+	@RequiresPermissions("${permissionPrefix}:edit")
+	@RequestMapping(value = "save")
+	public String save(${ClassName} ${className}, RedirectAttributes redirectAttributes) {
+		if (!beanValidator(redirectAttributes, ${className})){
+			return form(${className}.getId(),${className}.getParentId());
+		}
+		${className}Service.save(${className});
+		addMessage(redirectAttributes, "保存${functionNameSimple}成功");
+		return "redirect:"+Global.getAdminPath()+"/${viewPrefix}/?repage";
+	}
+	
+	@RequiresPermissions("${permissionPrefix}:edit")
+	@RequestMapping(value = "delete")
+	public String delete(String id, RedirectAttributes redirectAttributes) {
+		${className}Service.delete(new ClassName(id));
+		addMessage(redirectAttributes, "删除${functionNameSimple}成功");
+		return "redirect:"+Global.getAdminPath()+"/${viewPrefix}/?repage";
+	}
+
+	@RequiresPermissions("user")
+	@RequestMapping(value = "treeData")
+	public @ResponseBody List<Map<String, Object>> treeData(@RequestParam(required=false) String extId) {
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		List<${ClassName}> list = ${className}Service.findList(new ${ClassName}());
+		for (int i=0; i<list.size(); i++){
+			${ClassName} e = list.get(i);
+			if (StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
+				Map<String, Object> map = Maps.newHashMap();
+				map.put("id", e.getId());
+				map.put("pId", e.getParentId());
+				map.put("name", e.getName());
+				mapList.add(map);
+			}
+		}
+		return mapList;
+	}
+	
+}]]>
+	</content>
+</template>

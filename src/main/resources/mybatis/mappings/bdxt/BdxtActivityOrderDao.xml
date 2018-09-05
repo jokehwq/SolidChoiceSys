@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtActivityOrderDao">
+
+    <sql id="bdxtActivityOrderColumns">
+        a.id AS "id",
+        a.bdxt_user_id AS "bdxtUserId",
+        a.activity_id AS "activityId",
+        a.order_number AS "orderNumber",
+        a.order_amount AS "orderAmount",
+        a.order_status AS "orderStatus",
+        a.order_time AS "orderTime",
+        a.create_time AS "createTime",
+        a.update_time AS "updateTime",
+        a.create_by AS "createBy.id",
+        a.update_by AS "updateBy.id"
+    </sql>
+
+    <sql id="bdxtActivityOrderJoins">
+    </sql>
+
+    <select id="get" resultType="BdxtActivityOrder">
+        SELECT
+        ao.id AS "id",
+        ao.bdxt_user_id AS "bdxtUserId",
+        ao.activity_id AS "activityId",
+        ao.order_status AS "orderStatus",
+        a.activity_status as activityStatus
+        FROM bdxt_activity_order ao
+        LEFT JOIN bdxt_activity a on a.id=ao.activity_id
+        WHERE ao.id = #{id}
+    </select>
+
+    <!--查询活动下支付列表 -->
+    <select id="findApplyPageList" parameterType="com.foreveross.webbase.bdxt.entity.BdxtActivityOrder"
+            resultType="com.foreveross.webbase.bdxt.entity.BdxtActivityOrder">
+        SELECT
+        ud.realname as realName,
+        u.phone as phone,
+        ao.order_amount as orderAmount,
+        ao.order_status as orderStatus,
+        (
+        select count(*) from bdxt_user_card uc where uc.bdxt_user_id = ao.bdxt_user_id
+        AND uc.bdxt_activity_id = ao.activity_id
+        ) AS days,
+        uq.quote_price as quotePrice,
+        ao.order_time,
+        ao.remark,
+        ao.id
+        FROM
+        bdxt_activity_order ao
+        LEFT JOIN bdxt_activity a on a.id=ao.activity_id
+        LEFT JOIN bdxt_user_detail ud on ud.bdxt_user_id=ao.bdxt_user_id
+        LEFT JOIN bdxt_user u on u.id=ud.bdxt_user_id
+        LEFT JOIN bdxt_user_card uc ON uc.bdxt_user_id = ao.bdxt_user_id and
+        uc.bdxt_activity_id=ao.activity_id
+        LEFT JOIN bdxt_user_quote uq on uq.bdxt_user_id=ao.bdxt_user_id
+        WHERE
+        1 = 1
+        AND ao.activity_id = #{activityId}
+        <if test="realName!=null and realName!=''">
+            AND LOCATE(#{realName}, ud.realname)>0
+        </if>
+        <if test="phone!=null and phone!=''">
+            AND u.phone=#{phone}
+        </if>
+        <if test="orderStatus!=null">
+            AND ao.order_status=#{orderStatus}
+        </if>
+        GROUP BY ao.bdxt_user_id
+    </select>
+
+
+    <select id="findList" resultType="BdxtActivityOrder">
+        SELECT
+        ao.order_number as orderNumber,
+        a.activity_name as activityName,
+        ud.realname as realName,
+        u.phone as phone,
+        ao.order_amount as orderAmount,
+        ao.order_status as orderStatus,
+        ao.id as id,
+        a.work_address as address,
+        ao.create_time as createTime,
+        ao.bdxt_user_id
+        FROM
+        bdxt_activity_order ao
+        LEFT JOIN bdxt_activity a on a.id=ao.activity_id
+        LEFT JOIN bdxt_user_detail ud on ud.bdxt_user_id=ao.bdxt_user_id
+        LEFT JOIN bdxt_user u on u.id=ud.bdxt_user_id
+        <where>
+            <if test="orderNumber != null and orderNumber != ''">
+                AND ao.order_number = #{orderNumber}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND ao.order_status = #{orderStatus}
+            </if>
+            <if test="activityName != null and activityName != ''">
+                AND LOCATE(#{activityName}, a.activity_name)>0
+            </if>
+            <if test="realName != null and realName != ''">
+                AND LOCATE(#{realname}, ud.realname)>0
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <!--
+
+SELECT
+    ao.order_number as orderNumber,
+  ao.order_status as orderStatus,
+  ao.order_amount as orderAmount,
+  a.activity_name as activityName
+  d.name as dictName,
+   活动状态
+  a.
+FROM
+    bdxt_activity_order ao
+ LEFT JOIN bdxt_activity a on a.id=ao.activity_id
+ LEFT JOIN bdxt_dict d on d.id=a.activity_type
+WHERE
+    1 = 1
+AND ao.id = ''
+
+    -->
+
+    <select id="findAllList" resultType="BdxtActivityOrder">
+        SELECT
+        <include refid="bdxtActivityOrderColumns"/>
+        FROM bdxt_activity_order a
+        <include refid="bdxtActivityOrderJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+        <selectKey keyProperty="id" resultType="String" order="BEFORE">
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        INSERT INTO bdxt_activity_order(
+        id,
+        bdxt_user_id,
+        activity_id,
+        order_number,
+        order_amount,
+        order_status,
+        order_time,
+        create_time,
+        update_time,
+        create_by,
+        update_by
+        ) VALUES (
+        #{id},
+        #{bdxtUserId},
+        #{activityId},
+        #{orderNumber},
+        #{orderAmount},
+        2,
+        #{orderTime},
+        now(),
+        now(),
+        #{createBy.name},
+        #{updateBy.name}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.foreveross.webbase.bdxt.entity.BdxtActivityOrder">
+        UPDATE bdxt_activity_order SET
+        <if test="bdxtUserId!=null and bdxtUserId!=''">
+            bdxt_user_id = #{bdxtUserId},
+        </if>
+        <if test="activityId!=null and activityId!=''">
+            activity_id = #{activityId},
+        </if>
+        <if test="orderNumber!=null and orderNumber!=''">
+            order_number = #{orderNumber},
+        </if>
+        <if test="orderAmount!=null and orderAmount!=''">
+            order_amount = #{orderAmount},
+        </if>
+        <if test="orderStatus!=null">
+            order_status = #{orderStatus},
+        </if>
+        <if test="orderTime!=null and orderTime!=''">
+            order_time = #{orderTime},
+        </if>
+        <if test="remark!=null and remark!=''">
+            remark = #{remark},
+        </if>
+        update_by = #{updateBy.name},
+        update_time = now()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateOrder" parameterType="com.foreveross.webbase.bdxt.entity.BdxtActivityOrder">
+        UPDATE bdxt_activity_order SET
+        order_status = #{orderStatus},
+        update_by = #{updateBy.name},
+        update_time = now()
+        WHERE activity_id = #{activityId}
+    </update>
+
+
+    <!--查询用户订单列表-->
+    <select id="queryActivityOrderInfo" parameterType="java.util.Map" resultType="BdxtActivity">
+        SELECT
+        a.activity_name,
+        d.name as dictName,
+        a.activity_status,
+        a.activity_start_time,
+        a.activity_end_time,
+        a.work_address,
+        a.recruit_num,
+        a.gender_req,
+        a.per_bugget,
+        a.height_req_left,
+        a.height_req_right,
+        a.recruit_remark,
+        a.reference_sample_url,
+        a.activity_type,
+        a.id,
+        a.create_time,
+        count(if(uq.status=1,true,null)) as applyNum,
+        uq.quote_status as quoteStatus
+        FROM
+        bdxt_activity_order ao
+        LEFT JOIN bdxt_user_quote uq on uq.bdxt_activity_id=ao.activity_id
+        LEFT JOIN bdxt_activity a on a.id=ao.activity_id
+        LEFT JOIN bdxt_dict d on d.id=a.activity_type
+        <where>
+            AND ao.bdxt_user_id=#{userId}
+            <if test="orderStatus!=null and orderStatus==1">
+                AND a.activity_start_time &gt;=DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="orderStatus!=null and orderStatus==2">
+                AND a.activity_start_time &lt;DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')
+            </if>
+        </where>
+        GROUP BY ao.activity_id
+    </select>
+</mapper>

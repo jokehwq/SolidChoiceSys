@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtCommentDao">
+    
+	<sql id="bdxtCommentColumns">
+		a.id AS "id",
+		a.paraent_id AS "paraentId",
+		a.news_id AS "newsId",
+		a.comment_content AS "commentContent",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.create_by AS "createBy.name",
+		a.update_by AS "updateBy.name"
+	</sql>
+	
+	<sql id="bdxtCommentJoins">
+	</sql>
+    
+	<select id="get" resultType="BdxtComment">
+		SELECT 
+			<include refid="bdxtCommentColumns"/>
+		FROM bdxt_comment a
+		<include refid="bdxtCommentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getRoot" resultType="BdxtComment">
+		SELECT
+		a.id,
+		a.paraent_id,
+		a.news_id,
+		a.comment_content,
+		a.create_time,
+		a.update_time,
+		u.nickname AS nickName,
+		u.head_url AS headUrl
+		FROM bdxt_comment a,bdxt_user u
+		WHERE a.news_id = #{newsId} AND a.create_by=u.id AND a.paraent_id IS NULL
+		ORDER BY a.create_time desc
+
+	</select>
+
+	<select id="getChild" resultType="BdxtComment">
+	SELECT
+		a.id,
+		a.paraent_id,
+		a.news_id,
+		a.comment_content,
+		a.create_time,
+		a.update_time,
+		u.nickname AS nickName,
+		u.head_url AS headUrl
+		FROM bdxt_comment a,bdxt_user u
+		WHERE a.news_id = #{newsId} AND a.create_by=u.id AND a.paraent_id IS NOT NULL
+		ORDER BY a.create_time desc
+	</select>
+	
+	<select id="findList" resultType="BdxtComment">
+		SELECT
+		a.id,
+		a.paraent_id,
+		a.news_id,
+		a.comment_content,
+		a.create_time,
+		a.update_time,
+		u.nickname AS nickName,
+		u.head_url AS headUrl
+		FROM bdxt_comment a
+		LEFT JOIN bdxt_user u on a.create_by=u.id
+		<where>
+			<if test="newsId != null and newsId != ''">
+				AND a.news_id = #{newsId}
+			</if>
+			<if test="commentContent != null and commentContent != ''">
+				AND a.comment_content LIKE
+				<if test="dbName == 'oracle'">'%'||#{commentContent}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{commentContent}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{commentContent},'%')</if>
+			</if>
+			<if test="nickName != null and nickName != ''">
+				AND u.nickname LIKE
+				<if test="dbName == 'oracle'">'%'||#{nickName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{nickName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{nickName},'%')</if>
+			</if>
+		</where>
+		<!--<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>-->
+		ORDER BY a.create_time desc
+	</select>
+
+<!--	<select id="findList" resultType="BdxtComment">
+		SELECT
+		<include refid="bdxtCommentColumns"/>
+		FROM bdxt_comment a
+		<include refid="bdxtCommentJoins"/>
+		<where>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>-->
+	
+	<select id="findAllList" resultType="BdxtComment">
+		SELECT 
+			<include refid="bdxtCommentColumns"/>
+		FROM bdxt_comment a
+		<include refid="bdxtCommentJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bdxt_comment(
+			id,
+			paraent_id,
+			news_id,
+			comment_content,
+			create_time,
+			update_time,
+			create_by,
+			update_by
+		) VALUES (
+			#{id},
+			#{paraentId},
+			#{newsId},
+			#{commentContent},
+			now(),
+			null,
+			#{createBy.name},
+			#{updateBy.name}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bdxt_comment SET 	
+			comment_content = #{commentContent},
+			update_time = now(),
+			update_by = #{updateBy.name}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bdxt_comment
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

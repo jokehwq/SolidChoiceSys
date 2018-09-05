@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.weixin.dao.WxMenuDao">
+    
+	<sql id="wxMenuColumns">
+		a.id AS "id",
+		a.accountid AS "accountid",
+		a.createtime AS "createtime",
+		a.menutype AS "menutype",
+		a.modifytime AS "modifytime",
+		a.mediaid AS "mediaid",
+		a.name AS "name",
+		a.url AS "url",
+		a.parent_id AS "parent.id",
+		a.userid AS "userid",
+		a.del_flag AS "delFlag",
+		a.parent_ids AS "parentIds",
+		a.menukey AS "menukey"
+	</sql>
+	
+	<sql id="wxMenuJoins">
+	</sql>
+    
+	<select id="get" resultType="WxMenu">
+		SELECT 
+			<include refid="wxMenuColumns"/>
+		FROM wx_menu a
+		<include refid="wxMenuJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	<select id="getMenuByAccount" resultType="WxMenu">
+		SELECT 
+			<include refid="wxMenuColumns"/>
+		FROM wx_menu a
+		WHERE a.accountid = #{accountid} AND a.del_flag = '0'
+	</select>
+	
+	<select id="getTopMenuByAccount" resultType="WxMenu">
+		SELECT 
+			<include refid="wxMenuColumns"/>
+		FROM wx_menu a
+		WHERE a.accountid = #{accountid} AND a.del_flag = 0 AND a.parent_id = '0'
+	</select>
+	
+	
+	<select id="getChildrenMenu" resultType="WxMenu">
+		SELECT 
+			<include refid="wxMenuColumns"/>
+		FROM wx_menu a
+		WHERE  a.parent_id =  #{parentid} AND a.del_flag = '0' 
+	</select>
+	
+	
+	<select id="findList" resultType="WxMenu">
+		SELECT 
+			<include refid="wxMenuColumns"/>
+		FROM wx_menu a
+		<include refid="wxMenuJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="parentIds != null and parentIds != ''">
+				AND a.parent_ids LIKE 
+					<if test="dbName == 'oracle'">'%'||#{parentIds}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{parentIds}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{parentIds},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="findAllList" resultType="WxMenu">
+		SELECT 
+			<include refid="wxMenuColumns"/>
+		FROM wx_menu a
+		<include refid="wxMenuJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+	</select>
+	
+	<select id="findByParentIdsLike" resultType="WxMenu">
+		SELECT
+			a.id,
+			a.parent_id AS "parent.id",
+			a.parent_ids
+		FROM wx_menu a
+		<include refid="wxMenuJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.parent_ids LIKE #{parentIds}
+		</where>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wx_menu(
+			id,
+			accountid,
+			createtime,
+			modifytime,
+			menutype,
+			name,
+			url,
+			parent_id,
+			userid,
+			menukey,
+			del_flag
+		) VALUES (
+			#{id},
+			#{accountid},
+			#{createtime},
+			#{modifytime},
+			#{menutype},
+			#{name},
+			#{url},
+			#{parent.id},
+			#{userid},
+			#{menukey},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wx_menu SET
+	       <if test="accountid!=null"> 	
+			accountid = #{accountid},
+			</if>
+			menukey = #{menukey},
+			menutype = #{menutype},
+			modifytime = #{modifytime},
+			name = #{name},
+			url = #{url},
+			parent_id = #{parent.id},
+			userid = #{userid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE wx_menu SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wx_menu SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

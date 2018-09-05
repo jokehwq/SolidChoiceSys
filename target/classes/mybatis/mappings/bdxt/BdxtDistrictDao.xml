@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtDistrictDao">
+    
+	<sql id="bdxtDistrictColumns">
+		a.id AS "id",
+		a.districtname AS "districtname",
+		a.level AS "level",
+		a.districtcode AS "districtcode",
+		a.parent_id AS "parent.id"
+	</sql>
+	
+	<sql id="bdxtDistrictJoins">
+	</sql>
+    
+	<select id="get" resultType="BdxtDistrict">
+		SELECT 
+			<include refid="bdxtDistrictColumns"/>
+		FROM bdxt_district a
+		<include refid="bdxtDistrictJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BdxtDistrict">
+		SELECT 
+			<include refid="bdxtDistrictColumns"/>
+		FROM bdxt_district a
+		<include refid="bdxtDistrictJoins"/>
+		<where>
+			
+			<if test="districtname != null and districtname != ''">
+				AND a.districtname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{districtname}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{districtname}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{districtname},'%')</if>
+			</if>
+			<if test="districtcode != null and districtcode != ''">
+				AND a.districtcode = #{districtcode}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BdxtDistrict">
+		SELECT 
+			<include refid="bdxtDistrictColumns"/>
+		FROM bdxt_district a
+		<include refid="bdxtDistrictJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bdxt_district(
+			id,
+			districtname,
+			level,
+			districtcode,
+			parent_id
+		) VALUES (
+			#{id},
+			#{districtname},
+			#{level},
+			#{districtcode},
+			#{parent.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bdxt_district SET 	
+			districtname = #{districtname},
+			level = #{level},
+			districtcode = #{districtcode},
+			parent_id = #{parent.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bdxt_district
+		WHERE id = #{id}
+	</update>
+
+	<!--查询区域表父级列表-->
+	<select id="queryDistrictListByCondition" resultType="BdxtDistrict">
+		SELECT
+		cd.id,
+		cd.districtcode,
+		cd.districtname
+		FROM
+		bdxt_district cd
+		WHERE
+		cd.parent_id IN (
+		SELECT
+		d.id
+		FROM
+		bdxt_district d
+		WHERE
+		1 = 1
+		<if test="code!=null">
+			AND d.districtcode=#{code}
+		</if>
+		<if test="name!=null">
+			AND d.districtname=#{name}
+		</if>
+		)
+	</select>
+
+</mapper>

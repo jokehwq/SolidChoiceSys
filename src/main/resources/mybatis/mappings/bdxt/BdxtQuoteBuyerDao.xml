@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtQuoteBuyerDao">
+    <!-- 添加买家秀报价信息-->
+    <insert id="addQuoteBuyer" parameterType="java.util.Map">
+        <selectKey keyProperty="id" resultType="String" order="BEFORE">
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        INSERT INTO bdxt_quote_buyer(
+        id,
+        bdxt_user_id,
+        quote_price,
+        remark,
+        status,
+        create_time,
+        update_time,
+        create_by,
+        update_by
+        ) VALUES (
+        #{id},
+        #{bdxtUserId},
+        #{quotePrice},
+        #{remark},
+        1,
+        now(),
+        now(),
+        #{createBy},
+        #{updateBy}
+        )
+    </insert>
+
+    <!--查询我的买家秀报价信息 -->
+    <select id="queryUserQuoteBuyerInfo" resultType="BdxtQuoteBuyer">
+        SELECT
+        qb.quote_price,
+        qb.remark
+        FROM
+        bdxt_quote_buyer qb
+        <where>
+            AND qb.bdxt_user_id =#{userId}
+            AND qb.STATUS = 1
+        </where>
+    </select>
+</mapper>
