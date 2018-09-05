@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+		PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+	<classPathEntry location="${classPathEntry.mysql.location}" />
+
+	<context id="mysqlTables" targetRuntime="MyBatis3">
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+						connectionURL="jdbc:mysql://47.106.67.251:3306/bdxt?characterEncoding=utf8"
+						userId="root" password="">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<javaModelGenerator targetPackage="com.senson.entity"
+							targetProject="${javaModelGenerator.targetProject}">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<sqlMapGenerator targetPackage="mapper"
+						 targetProject="${sqlMapGenerator.targetProject}">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<javaClientGenerator type="XMLMAPPER"
+							 targetPackage="com.senson.mapper" targetProject="${javaClientGenerator.targetProject}">
+			<property name="enableSubPackages" value="false" />
+		</javaClientGenerator>
+
+		<!--
+        <table tableName="live_course_channel" domainObjectName="LiveCourseChannel"></table>
+        -->
+		<table tableName="a_banner" domainObjectName="Banner"></table>
+		<table tableName="a_comment" domainObjectName="Comment"></table>
+		<table tableName="a_comment_reply" domainObjectName="CommentReply"></table>
+		<table tableName="a_dictionary" domainObjectName="Dictionary"></table>
+		<table tableName="a_dictionary_type" domainObjectName="DictionaryType"></table>
+		<table tableName="a_integral" domainObjectName="Integral"></table>
+		<table tableName="a_integral_config" domainObjectName="IntegralConfig"></table>
+		<table tableName="a_integral_exchange_record" domainObjectName="IntegralExchangeRecord"></table>
+		<table tableName="a_integral_level" domainObjectName="IntegralLevel"></table>
+		<table tableName="a_integral_record" domainObjectName="IntegralRecord"></table>
+		<table tableName="a_label" domainObjectName="Label"></table>
+		<table tableName="a_like" domainObjectName="Like"></table>
+		<table tableName="a_rule" domainObjectName="Rule"></table>
+		<table tableName="a_sys_log" domainObjectName="SysLog"></table>
+		<table tableName="a_sys_user" domainObjectName="SysUser"></table>
+		<table tableName="a_topic" domainObjectName="Topic"></table>
+		<table tableName="a_topic_details" domainObjectName="TopicDetails"></table>
+		<table tableName="a_topic_forward" domainObjectName="TopicForward"></table>
+		<table tableName="a_topic_top" domainObjectName="TopicTop"></table>
+		<table tableName="a_user" domainObjectName="User"></table>
+		<table tableName="a_user_collection" domainObjectName="UserCollection"></table>
+		<table tableName="a_user_sign_record" domainObjectName="UserSignRecord"></table>
+		<table tableName="a_user_union" domainObjectName="UserUnion"></table>
+		<table tableName="a_vote_integral_detail" domainObjectName="VoteIntegralDetail"></table>
+
+
+	</context>
+</generatorConfiguration>
