@@ -354,4 +354,8 @@ public class Banner {
     public void setCreateUid(Long createUid) {
         this.createUid = createUid;
     }
+
+
+
+
 }
