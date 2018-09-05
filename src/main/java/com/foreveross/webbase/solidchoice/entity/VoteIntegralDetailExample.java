@@ -255,66 +255,6 @@ public class VoteIntegralDetailExample {
             return (Criteria) this;
         }
 
-        public Criteria and��3IsNull() {
-            addCriterion("\"�� 3\" is null");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3IsNotNull() {
-            addCriterion("\"�� 3\" is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3EqualTo(Integer value) {
-            addCriterion("\"�� 3\" =", value, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3NotEqualTo(Integer value) {
-            addCriterion("\"�� 3\" <>", value, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3GreaterThan(Integer value) {
-            addCriterion("\"�� 3\" >", value, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3GreaterThanOrEqualTo(Integer value) {
-            addCriterion("\"�� 3\" >=", value, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3LessThan(Integer value) {
-            addCriterion("\"�� 3\" <", value, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3LessThanOrEqualTo(Integer value) {
-            addCriterion("\"�� 3\" <=", value, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3In(List<Integer> values) {
-            addCriterion("\"�� 3\" in", values, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3NotIn(List<Integer> values) {
-            addCriterion("\"�� 3\" not in", values, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3Between(Integer value1, Integer value2) {
-            addCriterion("\"�� 3\" between", value1, value2, "��3");
-            return (Criteria) this;
-        }
-
-        public Criteria and��3NotBetween(Integer value1, Integer value2) {
-            addCriterion("\"�� 3\" not between", value1, value2, "��3");
-            return (Criteria) this;
-        }
-
         public Criteria andUserIdIsNull() {
             addCriterion("user_id is null");
             return (Criteria) this;
