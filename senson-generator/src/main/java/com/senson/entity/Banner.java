@@ -355,7 +355,4 @@ public class Banner {
         this.createUid = createUid;
     }
 
-
-
-
 }
