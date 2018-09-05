@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.weixin.dao.WxPayNoticeDao">
+    
+	<sql id="wxPayNoticeColumns">
+		a.id AS "id",
+		a.appid AS "appid",
+		a.mch_id AS "mch_id",
+		a.result_code AS "result_code",
+		a.err_code AS "err_code",
+		a.openid AS "openid",
+		a.is_subscribe AS "is_subscribe",
+		a.trade_type AS "trade_type",
+		a.bank_type AS "bank_type",
+		a.total_fee AS "total_fee",
+		a.fee_type AS "fee_type",
+		a.cash_fee AS "cash_fee",
+		a.cash_fee_type AS "cash_fee_type",
+		a.coupon_fee AS "coupon_fee",
+		a.coupon_count AS "coupon_count",
+		a.coupon_batch_id_index AS "coupon_batch_id_index",
+		a.coupon_id_index AS "coupon_id_index",
+		a.coupon_fee_index AS "coupon_fee_index",
+		a.transaction_id AS "transaction_id",
+		a.out_trade_no AS "out_trade_no",
+		a.attach AS "attach",
+		a.time_end AS "time_end",
+		a.recodetime AS "recodeTime",
+		a.paylocation AS "payLocation",
+		a.device_info AS "device_info"
+	</sql>
+	
+	<sql id="wxPayNoticeJoins">
+	</sql>
+    
+	<select id="get" resultType="WxPayNotice">
+		SELECT 
+			<include refid="wxPayNoticeColumns"/>
+		FROM wx_pay_notice a
+		<include refid="wxPayNoticeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WxPayNotice">
+		SELECT 
+			<include refid="wxPayNoticeColumns"/>
+		FROM wx_pay_notice a
+		<include refid="wxPayNoticeJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WxPayNotice">
+		SELECT 
+			<include refid="wxPayNoticeColumns"/>
+		FROM wx_pay_notice a
+		<include refid="wxPayNoticeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wx_pay_notice(
+			id,
+			appid,
+			mch_id,
+			result_code,
+			err_code,
+			openid,
+			is_subscribe,
+			trade_type,
+			bank_type,
+			total_fee,
+			fee_type,
+			cash_fee,
+			cash_fee_type,
+			coupon_fee,
+			coupon_count,
+			coupon_batch_id_index,
+			coupon_id_index,
+			coupon_fee_index,
+			transaction_id,
+			out_trade_no,
+			attach,
+			time_end,
+			recodetime,
+			paylocation,
+			device_info
+		) VALUES (
+			#{id},
+			#{appid},
+			#{mch_id},
+			#{result_code},
+			#{err_code},
+			#{openid},
+			#{is_subscribe},
+			#{trade_type},
+			#{bank_type},
+			#{total_fee},
+			#{fee_type},
+			#{cash_fee},
+			#{cash_fee_type},
+			#{coupon_fee},
+			#{coupon_count},
+			#{coupon_batch_id_index},
+			#{coupon_id_index},
+			#{coupon_fee_index},
+			#{transaction_id},
+			#{out_trade_no},
+			#{attach},
+			#{time_end},
+			#{recodeTime},
+			#{payLocation},
+			#{device_info}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wx_pay_notice SET 	
+			appid = #{appid},
+			mch_id = #{mch_id},
+			result_code = #{result_code},
+			err_code = #{err_code},
+			openid = #{openid},
+			is_subscribe = #{is_subscribe},
+			trade_type = #{trade_type},
+			bank_type = #{bank_type},
+			total_fee = #{total_fee},
+			fee_type = #{fee_type},
+			cash_fee = #{cash_fee},
+			cash_fee_type = #{cash_fee_type},
+			coupon_fee = #{coupon_fee},
+			coupon_count = #{coupon_count},
+			coupon_batch_id_index = #{coupon_batch_id_index},
+			coupon_id_index = #{coupon_id_index},
+			coupon_fee_index = #{coupon_fee_index},
+			transaction_id = #{transaction_id},
+			out_trade_no = #{out_trade_no},
+			attach = #{attach},
+			time_end = #{time_end},
+			recodetime = #{recodeTime},
+			paylocation = #{payLocation},
+			device_info = #{device_info}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM wx_pay_notice
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

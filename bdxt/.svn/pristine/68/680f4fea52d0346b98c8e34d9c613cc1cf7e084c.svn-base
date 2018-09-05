@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtAttachmentDao">
+
+    <sql id="bdxtAttachmentColumns">
+		a.id AS "id",
+		a.bdxt_user_id AS "bdxtUserId",
+		a.bdxt_tag AS "bdxtTag",
+		a.attach_name AS "attachName",
+		a.attach_type AS "attachType",
+		a.attach_url AS "attachUrl",
+		a.attach_status AS "attachStatus",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id"
+	</sql>
+
+    <sql id="bdxtAttachmentJoins">
+    </sql>
+
+    <select id="get" resultType="BdxtAttachment">
+        SELECT
+        a.id,
+        a.attach_name,
+        a.attach_url,
+        a.bdxt_tag
+        FROM bdxt_attachment a
+        WHERE a.id = #{id}
+        AND a.attach_status=1
+    </select>
+    <!--查询附件列表 1-图片 2-视频 -->
+    <select id="queryUserAttachInfo" resultType="BdxtAttachment">
+        SELECT
+        a.attach_name as attachName,
+        a.attach_url as attachUrl,
+        GROUP_CONCAT(
+        DISTINCT t.tag_name ORDER BY
+        t.create_time desc
+        ) AS tagNames,
+        GROUP_CONCAT(
+        DISTINCT t.id ORDER BY
+        t.create_time desc
+        ) AS tagId,
+        a.id as id,
+        a.attach_type
+        FROM
+        bdxt_attachment a
+        LEFT JOIN bdxt_tag t on FIND_IN_SET(t.id,a.bdxt_tag)
+        <where>
+            AND a.attach_status=1
+            <if test="attachType!=null and attachType!=''">
+                AND a.attach_type=#{attachType}
+            </if>
+            <if test="bdxtUserId!=null and bdxtUserId!=''">
+                AND a.bdxt_user_id=#{bdxtUserId}
+            </if>
+        </where>
+        GROUP BY a.id
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="findAllList" resultType="BdxtAttachment">
+        SELECT
+        <include refid="bdxtAttachmentColumns"/>
+        FROM bdxt_attachment a
+        <include refid="bdxtAttachmentJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+    <!--添加附件信息 -->
+    <insert id="addAttachInfo" parameterType="java.util.Map">
+        <selectKey keyProperty="id" resultType="String" order="BEFORE">
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        INSERT INTO bdxt_attachment(
+        id,
+        bdxt_user_id,
+        bdxt_tag,
+        attach_name,
+        attach_type,
+        attach_url,
+        attach_status,
+        create_time,
+        update_time,
+        create_by,
+        update_by
+        ) VALUES (
+        #{id},
+        #{bdxtUserId},
+        #{bdxtTag},
+        #{attachName},
+        #{attachType},
+        #{attachUrl},
+        1,
+        now(),
+        now(),
+        #{createBy},
+        #{updateBy}
+        )
+    </insert>
+
+    <update id="update">
+		UPDATE bdxt_attachment SET
+		    <if test="attachUrl!=null">
+                attach_url = #{attachUrl},
+            </if>
+            <if test="bdxtTag!=null">
+              bdxt_tag = #{bdxtTag},
+            </if>
+			update_time = now()
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+      UPDATE bdxt_attachment SET
+			attach_status = 2,
+			update_time = now()
+		WHERE id = #{id}
+	</update>
+
+   <!--查询作品精彩瞬间 或最新作品信息 -->
+    <select id="queryMomentInfo" resultType="BdxtAttachment">
+        SELECT
+        a.attach_name as attachName,
+        a.attach_url as attachUrl,
+        GROUP_CONCAT(
+        DISTINCT t.tag_name ORDER BY
+        t.create_time desc
+        ) AS tagNames,
+        GROUP_CONCAT(
+        DISTINCT t.id ORDER BY
+        t.create_time desc
+        ) AS tagId,
+        a.id as id,
+        u.gender as gender,
+        u.head_url as headUrl,
+        u.nickname as nickName
+        FROM
+        bdxt_attachment a
+        LEFT JOIN bdxt_tag t on FIND_IN_SET(t.id,a.bdxt_tag)
+        LEFT JOIN bdxt_user u on u.id=a.bdxt_user_id
+        <where>
+        AND a.attach_status=1
+        AND a.attach_type=1
+        </where>
+        GROUP BY a.id
+        ORDER BY a.create_time DESC
+        LIMIT 1
+    </select>
+
+    <!--查询最佳作品列表 -->
+    <select id="queryTopAttInfo" resultType="BdxtAttachment">
+        SELECT
+        a.attach_name as attachName,
+        a.attach_url as attachUrl,
+        a.id as id,
+        u.nickname as nickName
+        FROM
+        bdxt_attachment a
+        LEFT JOIN bdxt_user u on u.id=a.bdxt_user_id
+        where 1=1
+        AND a.attach_status=1
+        AND a.attach_type=1
+        ORDER BY a.create_time DESC
+        LIMIT 5
+    </select>
+</mapper>

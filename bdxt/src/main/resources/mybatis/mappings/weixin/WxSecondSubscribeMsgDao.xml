@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.weixin.dao.WxSecondSubscribeMsgDao">
+    
+	<sql id="wxSecondSubscribeMsgColumns">
+		a.id AS "id",
+		a.content AS "content",
+		a.accountid AS "accountid"
+	</sql>
+	
+	<sql id="wxSecondSubscribeMsgJoins">
+	</sql>
+    
+	<select id="get" resultType="WxSecondSubscribeMsg">
+		SELECT 
+			<include refid="wxSecondSubscribeMsgColumns"/>
+		FROM wx_subscribe_msg a
+		<include refid="wxSecondSubscribeMsgJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WxSecondSubscribeMsg">
+		SELECT 
+			<include refid="wxSecondSubscribeMsgColumns"/>
+		FROM wx_subscribe_msg a
+		<include refid="wxSecondSubscribeMsgJoins"/>
+		<where>
+			
+			<if test="content != null and content != ''">
+				AND a.content LIKE 
+					<if test="dbName == 'oracle'">'%'||#{content}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{content}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{content},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getByAccountId" resultType="WxSecondSubscribeMsg">
+		SELECT 
+			<include refid="wxSecondSubscribeMsgColumns"/>
+		FROM wx_subscribe_msg a
+		<include refid="wxSecondSubscribeMsgJoins"/>
+		WHERE accountid = #{accountid}
+	</select>
+	
+	<select id="findAllList" resultType="WxSecondSubscribeMsg">
+		SELECT 
+			<include refid="wxSecondSubscribeMsgColumns"/>
+		FROM wx_subscribe_msg a
+		<include refid="wxSecondSubscribeMsgJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wx_subscribe_msg(
+			id,
+			content,
+			accountid
+		) VALUES (
+			#{id},
+			#{content},
+			#{accountid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wx_subscribe_msg SET 	
+			content = #{content},
+			accountid = #{accountid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM wx_subscribe_msg
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

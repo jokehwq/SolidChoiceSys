@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.weixin.dao.WxUserInfoDao">
+
+    <sql id="wxUserInfoColumns">
+        a.id AS "id",
+        a.openid AS "openid",
+        a.unionId AS "unionId",
+        a.create_date AS "createDate",
+        a.phone AS "phone"
+    </sql>
+
+    <sql id="wxUserInfoJoins">
+    </sql>
+
+    <select id="getUserInfoByOpenid" resultType="WxUserInfo">
+        SELECT
+        <include refid="wxUserInfoColumns"/>
+        FROM wx_user_info a
+        <include refid="wxUserInfoJoins"/>
+        WHERE a.openid = #{openid}
+    </select>
+
+    <select id="getUserInfoByUnionid" resultType="WxUserInfo">
+        SELECT
+        <include refid="wxUserInfoColumns"/>
+        FROM wx_user_info a
+        <include refid="wxUserInfoJoins"/>
+        WHERE a.unionId = #{unionId}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO wx_user_info(
+        id,
+        openid,
+        unionId,
+        phone
+        ) VALUES (
+        #{id},
+        #{openid},
+        #{unionId},
+        #{phone}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE wx_user_info SET
+        openid = #{openid},
+        unionId = #{unionId},
+        phone = #{phone}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

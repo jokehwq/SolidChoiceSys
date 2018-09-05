@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtUserFundRecordDao">
+    
+	<sql id="bdxtUserFundRecordColumns">
+		a.id AS "id",
+		a.bxdt_user_id AS "bxdtUserId",
+		a.capital AS "capital",
+		a.bank_card_no AS "bankCardNo",
+		a.house_holder_name AS "houseHolderName",
+		a.status AS "status",
+		a.capital_type AS "capitalType",
+		a.creat_time AS "creatTime",
+		a.update_time AS "updateTime",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="bdxtUserFundRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="BdxtUserFundRecord">
+		SELECT 
+			<include refid="bdxtUserFundRecordColumns"/>
+		FROM bdxt_user_fund_record a
+		<include refid="bdxtUserFundRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BdxtUserFundRecord">
+		SELECT 
+			<include refid="bdxtUserFundRecordColumns"/>
+		FROM bdxt_user_fund_record a
+		<include refid="bdxtUserFundRecordJoins"/>
+		<where>
+			
+			<if test="bankCardNo != null and bankCardNo != ''">
+				AND a.bank_card_no = #{bankCardNo}
+			</if>
+			<if test="houseHolderName != null and houseHolderName != ''">
+				AND a.house_holder_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{houseHolderName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{houseHolderName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{houseHolderName},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="capitalType != null and capitalType != ''">
+				AND a.capital_type = #{capitalType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BdxtUserFundRecord">
+		SELECT 
+			<include refid="bdxtUserFundRecordColumns"/>
+		FROM bdxt_user_fund_record a
+		<include refid="bdxtUserFundRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bdxt_user_fund_record(
+			id,
+			bxdt_user_id,
+			capital,
+			bank_card_no,
+			house_holder_name,
+			status,
+			capital_type,
+			creat_time,
+			update_time,
+			create_by
+		) VALUES (
+			#{id},
+			#{bxdtUserId},
+			#{capital},
+			#{bankCardNo},
+			#{houseHolderName},
+			#{status},
+			#{capitalType},
+			now(),
+			now(),
+			#{createBy.name}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bdxt_user_fund_record SET 	
+			bxdt_user_id = #{bxdtUserId},
+			capital = #{capital},
+			bank_card_no = #{bankCardNo},
+			house_holder_name = #{houseHolderName},
+			status = #{status},
+			capital_type = #{capitalType},
+			update_time = now(),
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bdxt_user_fund_record
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

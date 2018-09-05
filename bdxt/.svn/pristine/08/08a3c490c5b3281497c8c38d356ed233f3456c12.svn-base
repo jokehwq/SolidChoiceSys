@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.system.task.dao.QuartzJobDetailDao">
+    
+	<sql id="quartzJobDetailColumns">
+		a.sched_name AS "schedName",
+		a.job_name AS "jobName",
+		a.job_group AS "jobGroup",
+		a.description AS "description",
+		a.job_class_name AS "jobClassName",
+		a.is_durable AS "isDurable",
+		a.is_nonconcurrent AS "isNonconcurrent",
+		a.is_update_data AS "isUpdateData",
+		a.requests_recovery AS "requestsRecovery",
+		a.job_data AS "jobData",
+		a.id AS "id",
+		a.cron AS "cron"
+	</sql>
+	
+	<sql id="quartzJobDetailJoins">
+	</sql>
+    
+	<select id="get" resultType="QuartzJobDetail">
+		SELECT 
+			<include refid="quartzJobDetailColumns"/>
+		FROM qrtz_job_details a
+		<include refid="quartzJobDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="QuartzJobDetail">
+		SELECT 
+			<include refid="quartzJobDetailColumns"/>
+		FROM qrtz_job_details a
+		<include refid="quartzJobDetailJoins"/>
+		<where>
+			
+			<if test="jobName != null and jobName != ''">
+				AND a.job_name like concat('%',#{jobName},'%')
+			</if>
+			<if test="jobGroup != null and jobGroup != ''">
+				AND a.job_group like concat('%',#{jobGroup},'%')
+			</if>
+			<if test="jobClassName != null and jobClassName != ''">
+				AND a.job_class_name like concat('%',#{jobClassName},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="QuartzJobDetail">
+		SELECT 
+			<include refid="quartzJobDetailColumns"/>
+		FROM qrtz_job_details a
+		<include refid="quartzJobDetailJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO qrtz_job_details(
+			sched_name,
+			job_name,
+			job_group,
+			description,
+			job_class_name,
+			is_durable,
+			is_nonconcurrent,
+			is_update_data,
+			requests_recovery,
+			id,
+			cron
+		) VALUES (
+			#{schedName},
+			#{jobName},
+			#{jobGroup},
+			#{description},
+			#{jobClassName},
+			#{isDurable},
+			#{isNonconcurrent},
+			#{isUpdateData},
+			#{requestsRecovery},
+			#{id},
+			#{cron}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE qrtz_job_details SET 	
+			sched_name = #{schedName},
+			job_name = #{jobName},
+			job_group = #{jobGroup},
+			description = #{description},
+			job_class_name = #{jobClassName},
+			is_durable = #{isDurable},
+			is_nonconcurrent = #{isNonconcurrent},
+			is_update_data = #{isUpdateData},
+			requests_recovery = #{requestsRecovery},
+			cron = #{cron}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM qrtz_job_details
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateIdCron">
+		UPDATE qrtz_job_details SET 	
+			id = #{id},
+			cron = #{cron}
+		WHERE sched_name = #{schedName} and job_group = #{jobGroup} and job_name = #{jobName}
+	</update>
+	
+</mapper>

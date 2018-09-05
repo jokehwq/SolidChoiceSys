@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtActivityDao">
+
+    <select id="get" resultType="com.foreveross.webbase.bdxt.entity.BdxtActivity">
+		SELECT
+		a.activity_name,
+		d.name as dictName,
+		a.activity_status,
+		a.activity_start_time,
+		a.activity_end_time,
+		a.work_address,
+		a.recruit_num,
+		a.gender_req,
+		a.per_bugget,
+		a.height_req_left,
+		a.height_req_right,
+		a.recruit_remark,
+		a.reference_sample_url,
+		a.activity_type,
+		a.id,
+		a.create_time,
+		count(if(uq.status=1,true,null)) as applyNum,
+		a.recruit_remark
+		FROM
+		bdxt_activity a
+		LEFT JOIN bdxt_dict d on d.id=a.activity_type
+		LEFT JOIN bdxt_user_quote uq on uq.bdxt_activity_id=a.id
+		WHERE a.id = #{id}
+	</select>
+
+
+    <select id="findList" resultType="BdxtActivity">
+        SELECT
+        a.id,
+        a.activity_name,
+        d.name as dictName,
+        a.activity_status,
+        a.activity_start_time,
+        a.activity_end_time,
+        a.work_address,
+        a.recruit_num,
+        a.gender_req,
+        a.per_bugget,
+        a.height_req_left,
+        a.height_req_right,
+        a.status,
+        a.create_time
+        FROM
+        bdxt_activity a
+        LEFT JOIN bdxt_dict d on d.id=a.activity_type
+        <where>
+            <if test="activityName != null and activityName != ''">
+                AND a.activity_name = #{activityName}
+            </if>
+            <if test="activityType != null and activityType != ''">
+                AND a.activity_type = #{activityType}
+            </if>
+            <if test="activityStatus != null and activityStatus != ''">
+                AND a.activity_status = #{activityStatus}
+            </if>
+            <if test="genderReq!=null">
+                AND a.gender_req = #{genderReq}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+                <otherwise>
+                    ORDER BY a.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <insert id="insert">
+		INSERT INTO bdxt_activity(
+			id,
+			activity_name,
+			activity_type,
+			activity_start_time,
+			activity_end_time,
+			activity_status,
+			work_address,
+			recruit_num,
+			per_bugget,
+			gender_req,
+			height_req_left,
+            height_req_right,
+			is_reimburse_travel,
+			recruit_remark,
+			reference_sample_url,
+			status,
+			create_time,
+			update_time,
+			create_by,
+			update_by
+		) VALUES (
+			#{id},
+			#{activityName},
+			#{activityType},
+			#{activityStartTime},
+			#{activityEndTime},
+			1,
+			#{workAddress},
+			#{recruitNum},
+			#{perBugget},
+			#{genderReq},
+			#{heightReqLeft},
+			#{heightReqRight},
+			#{isReimburseTravel},
+			#{recruitRemark},
+			#{referenceSampleUrl},
+			1,
+			now(),now(),#{createBy.name},#{updateBy.name}
+		)
+	</insert>
+
+
+    <update id="update">
+        UPDATE bdxt_activity
+        <set>
+            <if test="activityName != null">activity_name = #{activityName},</if>
+            <if test="activityType != null">activity_type = #{activityType},</if>
+            <if test="activityStartTime != null">activity_start_time = #{activityStartTime},</if>
+            <if test="activityEndTime != null">activity_end_time = #{activityEndTime},</if>
+            <if test="workAddress != null">work_address = #{workAddress},</if>
+            <if test="recruitNum != null">recruit_num = #{recruitNum},</if>
+            <if test="perBugget != null">per_bugget = #{perBugget},</if>
+            <if test="genderReq != null">gender_req = #{genderReq},</if>
+            <if test="heightReqLeft != null">height_req_left = #{heightReqLeft},</if>
+            <if test="heightReqRight != null">height_req_right = #{heightReqRight},</if>
+            <if test="isReimburseTravel != null">is_reimburse_travel = #{isReimburseTravel},</if>
+            <if test="recruitRemark != null">recruit_remark = #{recruitRemark},</if>
+            <if test="referenceSampleUrl != null">reference_sample_url = #{referenceSampleUrl},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="activityStatus != null">activity_status = #{activityStatus},</if>
+            <if test="updateBy!= null">update_by = #{updateBy.name},</if>
+            update_time = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="delete">
+		DELETE FROM bdxt_activity
+		WHERE id = #{id}
+	</update>
+
+    <!--app根据不同条件筛选活动列表信息 -->
+    <select id="queryActivityInfoByCondition" resultType="BdxtActivity"
+            parameterType="java.util.Map">
+        SELECT
+        a.id,
+        a.activity_name,
+        d.name as dictName,
+        a.activity_status,
+        a.activity_start_time,
+        a.activity_end_time,
+        a.work_address,
+        a.recruit_num,
+        a.gender_req,
+        a.per_bugget,
+        a.height_req_left,
+        a.height_req_right,
+        a.status,
+        a.create_time,
+        count(if(uq.status=1,true,null)) as applyNum,
+        "" as tagNames
+        FROM
+        bdxt_activity a
+        LEFT JOIN bdxt_dict d on d.id=a.activity_type
+        LEFT JOIN bdxt_user_quote uq on uq.bdxt_activity_id=a.id
+        <where>
+            AND a.activity_status!=4
+            AND a.status=1
+            <if test="keyWord!=null and keyWord!=''">
+
+            </if>
+            <if test="areaName != null and areaName != ''">
+                AND a.work_address = #{areaName}
+            </if>
+            <if test="activityTypeId != null and activityTypeId != ''">
+                AND a.activity_type = #{activityTypeId}
+            </if>
+            <if test="publishTime!=null and publishTime!=''">
+                AND DATE_FORMAT(a.create_time,'%Y-%m-%H')&lt;=#{publishTime,jdbcType=VARCHAR}
+            </if>
+            <if test="activityStartTime !=null and activityStartTime!=''">
+                AND DATE_FORMAT(a.ACTIVITY_START_TIME,'%Y-%m-%H')
+                &gt;=#{activityStartTime,jdbcType=VARCHAR}
+            </if>
+            <if test="activityEndTime !=null and activityEndTime!=''">
+                AND DATE_FORMAT(a.ACTIVITY_END_TIME,'%Y-%m-%H') &lt;=
+                #{activityEndTime,jdbcType=VARCHAR}
+            </if>
+            <if test="isReimburseTravel!=null and isReimburseTravel!=0">
+                AND a.is_reimburse_travel=#{isReimburseTravel}
+            </if>
+            <if test="genderReq!=null and genderReq!=0">
+                AND a.gender_req=#{genderReq}
+            </if>
+        </where>
+        GROUP BY a.id
+        ORDER BY a.activity_start_time DESC
+    </select>
+
+    <!--查看活动详情 -->
+    <select id="detail" resultType="com.foreveross.webbase.bdxt.entity.BdxtActivity">
+        SELECT
+        a.activity_name,
+        d.name as dictName,
+        a.activity_status,
+        a.activity_start_time,
+        a.activity_end_time,
+        a.work_address,
+        a.recruit_num,
+        a.gender_req,
+        a.per_bugget,
+        a.height_req_left,
+        a.height_req_right,
+        a.recruit_remark,
+        a.reference_sample_url,
+        a.activity_type,
+        a.id,
+        <if test="userId!=null and userId!=''">
+            (
+            SELECT
+            count(*)
+            FROM
+            bdxt_user_quote u
+            WHERE
+            1 = 1 and u.bdxt_activity_id =#{id}
+            and u.bdxt_user_id=#{userId}
+            ) AS applyIs,
+        </if>
+        a.create_time,
+        count(if(uq.status=1,true,null)) as applyNum,
+        a.recruit_remark
+        FROM
+        bdxt_activity a
+        LEFT JOIN bdxt_dict d on d.id=a.activity_type
+        LEFT JOIN bdxt_user_quote uq on uq.bdxt_activity_id=a.id
+        WHERE a.id = #{id}
+    </select>
+
+    <!--查看我的活动报名记录 -->
+    <select id="queryApplyInfo" resultType="BdxtActivity">
+        SELECT
+        a.activity_name,
+        d.name as dictName,
+        a.activity_status,
+        a.activity_start_time,
+        a.activity_end_time,
+        a.work_address,
+        a.recruit_num,
+        a.gender_req,
+        a.per_bugget,
+        a.height_req_left,
+        a.height_req_right,
+        a.recruit_remark,
+        a.reference_sample_url,
+        a.activity_type,
+        a.id,
+        a.create_time,
+        count(if(uq.status=1,true,null)) as applyNum,
+        uq.quote_status as quoteStatus
+        FROM
+        bdxt_user_quote uq
+        LEFT JOIN bdxt_activity a on a.id=uq.bdxt_activity_id
+        LEFT JOIN bdxt_dict d on d.id=a.activity_type
+        <where>
+            AND a.status=1
+                <if test="userId!=null and userId!=''">
+                AND uq.bdxt_user_id=#{userId}
+            </if>
+            <if test="quoteStatus!=null">
+                AND uq.quote_status=#{quoteStatus}
+            </if>
+        </where>
+        GROUP BY uq.bdxt_activity_id
+    </select>
+
+    <!--批量更新活动信息 -->
+    <update id="updateActivityInfo" parameterType="java.util.List">
+        update bdxt_activity
+        set activity_status=5
+        where id in
+        <foreach collection="ids" index="index" item="item"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+    <!--查询活动列表 -->
+    <select id="queryActivityList" resultType="BdxtActivity">
+        SELECT *  FROM bdxt_activity a
+         <where>
+            AND a.status=1
+        </where>
+    </select>
+</mapper>

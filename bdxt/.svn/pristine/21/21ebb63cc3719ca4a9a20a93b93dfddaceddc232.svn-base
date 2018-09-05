@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.weixin.dao.WxKeywordDao">
+
+
+	<resultMap type="WxKeyword" id="keywordMap">
+		<id property="id" column="id" />
+		<result property="keyword" column="keyword" />
+		<result property="accountid" column="accountid" />
+	</resultMap>
+
+	<resultMap type="WxKeyword" id="keywordMessageMap" extends="keywordMap">
+		<collection property="msgs" ofType="WxMsg" >
+			<id property="id" column="msgId" />
+		</collection>
+	</resultMap>  
+
+	<sql id="wxKeywordColumns">
+		a.id AS "id",
+		a.keyword AS "keyword",
+		a.accountid AS "accountid",
+		a.create_user AS "createUser",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag",
+		a.modify_time AS "modifyTime"
+	</sql>
+	
+	<sql id="wxKeywordJoins">
+	</sql>
+    
+	<select id="get" resultType="WxKeyword">
+		SELECT 
+			<include refid="wxKeywordColumns"/>
+		FROM wx_keyword a
+		<include refid="wxKeywordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WxKeyword">
+		SELECT 
+			<include refid="wxKeywordColumns"/>
+		FROM wx_keyword a
+		<include refid="wxKeywordJoins"/>
+		<where>
+			a.del_flag = '0' AND a.accountid = #{accountid}
+			<if test="keyword != null and keyword != ''">
+				AND a.keyword  LIKE	CONCAT('%',#{keyword},'%')
+			</if>
+		</where>
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<select id="findAllList" resultType="WxKeyword">
+		SELECT 
+			<include refid="wxKeywordColumns"/>
+		FROM wx_keyword a
+		<include refid="wxKeywordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wx_keyword(
+			id,
+			keyword,
+			accountid,
+			create_user,
+			create_time,
+			del_flag,
+			modify_time
+		) VALUES (
+			#{id},
+			#{keyword},
+			#{accountid},
+			#{createUser},
+			#{createTime},
+			#{delFlag},
+			#{modifyTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wx_keyword SET 	
+			keyword = #{keyword},
+			modify_time = #{modifyTime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE wx_keyword SET 
+			del_flag = '1'
+		WHERE id = #{id}
+	</update>
+		
+	<select id="findKeyword" parameterType="java.util.Map" resultType="WxKeyword">
+		SELECT 
+			<include refid="wxKeywordColumns"/>
+		FROM wx_keyword a
+		<include refid="wxKeywordJoins"/>
+		WHERE a.accountid = #{accountid} AND a.del_flag = 0 AND a.keyword = #{keyword}
+		<if test="id !=null and id !=''">
+		AND a.id != #{id}
+		</if>
+	</select>
+	
+    <select id="selectKeyAndMsgId" parameterType="WxKeyword"  
+        resultMap="keywordMessageMap">  
+        select k.id AS id,k.keyword AS keyword,k.accountid AS accountid,km.msg_id AS MsgId 
+        FROM wx_keyword k left join wx_keyword_rel_msg km on k.id = km.keyword_id   
+        where k.del_flag = '0' AND k.accountid = #{accountid}   
+   </select> 
+</mapper>

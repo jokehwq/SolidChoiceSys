@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.weixin.dao.WxUserGroupDao">
+    
+    <resultMap type="WxUserGroup" id="WxUserGroupMap">
+		<id property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="groupName" column="group_name" />
+		<result property="groupId" column="group_id" />
+		<result property="accountid" column="accountid" />
+		<association property="wxUserRelGroup" javaType="WxUserRelGroup">
+		<result property="groupid" column="f_groupid" />
+		<result property="userid" column="f_userid" />
+		</association>
+	</resultMap>
+	
+	<sql id="wxUserGroup_wxUserRelGroupColumns">
+		a.id AS "id",
+		a.group_name AS "group_name",
+		a.group_id AS "groupId",
+		a.accountid AS "accountid",
+		w.groupid AS "f_groupid",
+		w.userid AS "f_userid"
+	</sql>
+    
+	<sql id="wxUserGroupColumns">
+		a.id AS "id",
+		a.group_name AS "groupName",
+		a.group_id AS "groupId",
+		a.accountid AS "accountid"
+	</sql>
+	
+	<sql id="wxUserGroupJoins">
+	</sql>
+	
+	<select id="get" resultType="WxUserGroup">
+		SELECT 
+			<include refid="wxUserGroupColumns"/>
+		FROM wx_user_group a
+		<include refid="wxUserGroupJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getUserGroup" resultType="WxUserGroup">
+		SELECT 
+			<include refid="wxUserGroupColumns"/>
+		FROM wx_user_group a
+		<include refid="wxUserGroupJoins"/>
+		WHERE a.id = #{id}
+		<!-- AND a.accountid = #{accountid} -->
+	</select>
+	
+	<select id="findList" resultType="WxUserGroup">
+		SELECT 
+			<include refid="wxUserGroupColumns"/>
+		FROM wx_user_group a
+		<include refid="wxUserGroupJoins"/>
+		<where>
+		    <if test="accountid != null and accountid != ''">
+			a.accountid = #{accountid}
+			</if>
+			<if test="groupName != null and groupName != ''">
+				AND a.group_name = #{groupName}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WxUserGroup">
+		SELECT 
+			<include refid="wxUserGroupColumns"/>
+		FROM wx_user_group a
+		<include refid="wxUserGroupJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO wx_user_group(
+			id,
+			group_name,
+			group_id,
+			accountid
+		) VALUES (
+			#{id},
+			#{groupName},
+			#{groupId},
+			#{accountid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE wx_user_group SET 	
+			group_name = #{groupName}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM wx_user_group
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getGroups" resultType="WxUserGroup">
+		SELECT 
+			<include refid="wxUserGroupColumns"/>
+		FROM wx_user_group a
+		<include refid="wxUserGroupJoins"/>
+		WHERE accountid = #{accountid}
+	</select>
+ 
+ 	<select id="getGroup" resultType="WxUserGroup">
+		SELECT 
+			<include refid="wxUserGroupColumns"/>
+		FROM wx_user_group a
+		<include refid="wxUserGroupJoins"/>
+		WHERE a.group_id = #{groupid}
+		AND a.accountid = #{accountid}
+	</select>
+	
+	<select id="getUserGroups" resultMap="WxUserGroupMap">
+		SELECT 
+			<include refid="wxUserGroup_wxUserRelGroupColumns"/>
+		FROM wx_user_group a left join wx_user_rel_group w on a.id = w.groupid
+		<include refid="wxUserGroupJoins"/>
+		<where>
+		    <if test="accountid != null and accountid != ''">
+			a.accountid = #{accountid}
+			</if>
+			<if test="groupName != null and groupName != ''">
+			AND a.group_name = #{groupName}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getUG" resultType="WxUserGroup">
+		SELECT 
+			<include refid="wxUserGroupColumns"/>
+		FROM wx_user_group a
+		<include refid="wxUserGroupJoins"/>
+		WHERE a.group_name = #{groupName}
+	</select>
+</mapper>

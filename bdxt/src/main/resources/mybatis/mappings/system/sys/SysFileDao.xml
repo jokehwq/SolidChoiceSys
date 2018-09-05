@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.system.file.dao.SysFileDao">
+    
+	<sql id="sysFileColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.ext AS "ext",
+		a.path AS "path",
+		a.size AS "size",
+		a.sizestr AS "sizestr",
+		a.createtime AS "createtime",
+		a.createby AS "createby",
+		a.module AS "module",
+		a.submodule AS "submodule",
+		a.dataid AS "dataid"
+	</sql>
+	
+	<sql id="sysFileJoins">
+	</sql>
+    
+	<select id="get" resultType="SysFile">
+		SELECT 
+			<include refid="sysFileColumns"/>
+		FROM sys_file a
+		<include refid="sysFileJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	
+	<select id="findList" resultType="SysFile">
+		SELECT 
+			<include refid="sysFileColumns"/>
+		FROM sys_file a
+		<include refid="sysFileJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="ext != null and ext != ''">
+				AND a.ext = #{ext}
+			</if>
+			<if test="createby != null and createby != ''">
+				AND a.createby = #{createby}
+			</if>
+			<if test="module != null and module != ''">
+				AND a.module = #{module}
+			</if>
+			<if test="submodule != null and submodule != ''">
+				AND a.submodule = #{submodule}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysFile">
+		SELECT 
+			<include refid="sysFileColumns"/>
+		FROM sys_file a
+		<include refid="sysFileJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_file(
+			id,
+			name,
+			ext,
+			path,
+			size,
+			sizestr,
+			createtime,
+			createby,
+			module,
+			submodule,
+			dataid
+		) VALUES (
+			#{id},
+			#{name},
+			#{ext},
+			#{path},
+			#{size},
+			#{sizestr},
+			#{createtime},
+			#{createby},
+			#{module},
+			#{submodule},
+			#{dataid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_file SET 	
+			name = #{name},
+			ext = #{ext},
+			path = #{path},
+			size = #{size},
+			sizestr = #{sizestr},
+			module = #{module},
+			submodule = #{submodule},
+			dataid = #{dataid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_file
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findFileList" resultType="SysFile">
+		SELECT 
+			<include refid="sysFileColumns"/>
+		FROM sys_file a
+		<include refid="sysFileJoins"/>
+		WHERE 
+		a.dataid = #{dataid}
+	</select>
+	
+	<select id="getSysFile" resultType="SysFile">
+		SELECT 
+			<include refid="sysFileColumns"/>
+		FROM sys_file a
+		<include refid="sysFileJoins"/>
+		WHERE a.dataid = #{dataid}
+	</select>
+	
+</mapper>

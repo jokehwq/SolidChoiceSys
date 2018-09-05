@@ -1,0 +1,106 @@
+<html lang="en">
+<head>
+	<title>图文管理</title>
+	<meta name="decorator" content="default"/>
+</head>
+<body>
+<div class="modal-header">
+    <h3 class="modal-title">图片</h3>
+</div>
+<div class="modal-body photo-dialog">
+    <tabset class="tab-container">
+        <tab heading="上传图片" select="tabSelect(1)">
+            <div class="" style="min-height: 350px">
+
+                <div class="form-group">
+
+                    <label class="photo-item" ng-show="vm.upload.img">
+
+                        <span class="image-active" style="display: block;"></span>
+
+                        <img class="" ng-src="{{vm.upload.img}}" alt=""/>
+
+                    </label>
+
+                    <label class="photo-item" style="line-height: 120px; ">
+                        <input type="file" nv-file-select="" uploader="uploader" name="file"
+                               class="webuploader-element-invisible" accept="image/*">
+                        选择本地图片
+                    </label>
+
+                </div>
+
+            </div>
+
+        </tab>
+        <tab heading="网络图片" select="tabSelect(2)">
+
+            <div class="" style="min-height: 350px">
+
+                <div class="row m-b">
+                    <div class="col col-md-6">
+                        <input type="text" class="form-control" ng-model="vm.netImgPath" placeholder="请填写完整的图片地址"/>
+                    </div>
+                    <div class="col col-md-6">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <img ui-img-lazy="{{vm.netImgPath}}" width="200" alt=""/>
+                    </div>
+                </div>
+
+            </div>
+        </tab>
+        <tab heading="图片库" select="tabSelect(3)">
+            <form role="form" class="form-horizontal m-r m-l-lg ">
+
+                <div class="form-group">
+
+                    <label class="photo-item" ng-repeat="item in vm.data.dataList">
+
+                        <input class="" type="radio" name="a" ng-if="!vm.isMutil" ng-model="item.active" value="1"/>
+                        <input class="" type="checkbox" ng-if="vm.isMutil" name="a" ng-model="item.active" value="1"/>
+                        <span class="image-active"></span>
+
+                        <img class=" " ui-img-lazy="{{IMG_REMOTE}}{{item.saveKey}}?imageView/1/w/120/h/120"
+                             alt=""/>
+
+                    </label>
+
+                </div>
+
+                <div class="padder-v text-center" ng-show="vm.data.totalCount==0">暂无图片</div>
+
+                <div class="text-right">
+                    <paging
+                            class="small"
+                            page="vm.data.page"
+                            page-size="18"
+                            total="vm.data.totalCount"
+                            adjacent="{{adjacent}}"
+                            dots="{{dots}}"
+                            scroll-top="true"
+                            hide-if-empty="true"
+                            ul-class="pagination pagination-sm"
+                            active-class="active"
+                            disabled-class="disabled"
+                            show-prev-next="true"
+                            paging-action="doRefreshModalPhoto({page:page,pageSize:18})">
+                    </paging>
+                </div>
+            </form>
+        </tab>
+
+    </tabset>
+    <!---->
+
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
+    <button class="btn btn-primary" ng-click="ok()">确定</button>
+</div>
+</body>
+</html>

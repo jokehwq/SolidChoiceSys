@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<name>controller</name>
+	<filePath>src/main/java/${packageName}/${moduleName}/${subModuleName}/web</filePath>
+	<fileName>${ClassName}Controller.java</fileName>
+	<content><![CDATA[
+/**
+ * Copyright &copy; 2012-2016 <a href="https://git.oschina.net/zdw2016/webbase5">Webbase</a> All rights reserved.
+ */
+package ${packageName}.${moduleName}<#if subModuleName != "">.${subModuleName}</#if>.web;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.foreveross.webbase.common.config.Global;
+import com.foreveross.webbase.common.persistence.Page;
+import com.foreveross.webbase.common.web.BaseController;
+import com.foreveross.webbase.common.utils.StringUtils;
+import ${packageName}.${moduleName}<#if subModuleName != "">.${subModuleName}</#if>.entity.${ClassName};
+import ${packageName}.${moduleName}<#if subModuleName != "">.${subModuleName}</#if>.service.${ClassName}Service;
+
+/**
+ * ${functionName}Controller
+ * @author ${functionAuthor}
+ * @version ${functionVersion}
+ */
+@Controller
+@RequestMapping(value = "${r"${adminPath}"}/${urlPrefix}")
+public class ${ClassName}Controller extends BaseController {
+
+	@Autowired
+	private ${ClassName}Service ${className}Service;
+	
+	@RequiresPermissions("${permissionPrefix}:view")
+	@RequestMapping(value = {"list", ""})
+	public String list(${ClassName} ${className}) {
+		Page<${ClassName}> page = ${className}Service.findPage(new Page<${ClassName}>(request(), response()), ${className}); 
+		attr("page", page);
+		return "${viewPrefix}List";
+	}
+
+	@RequiresPermissions("${permissionPrefix}:view")
+	@RequestMapping("form")
+	public String form(String id) {
+		if(StringUtils.isNotEmpty(id)) {
+			${ClassName} ${className}=${className}Service.get(id);
+			attr("${className}", ${className});
+		} else {
+			attr("${className}", new ${ClassName}());
+		}
+		return "${viewPrefix}Form";
+	}
+
+	@RequiresPermissions("${permissionPrefix}:edit")
+	@RequestMapping("save")
+	public String save(${ClassName} ${className}, RedirectAttributes redirectAttributes) {
+		if (!beanValidator(redirectAttributes, ${className})){
+			return form(${className}.getId());
+		}
+		${className}Service.save(${className});
+		addMessage(redirectAttributes, "保存${functionNameSimple}成功");
+		return "redirect:"+Global.getAdminPath()+"/${viewPrefix}/?repage";
+	}
+	
+	@RequiresPermissions("${permissionPrefix}:edit")
+	@RequestMapping("delete")
+	public String delete(@RequestParam String id, RedirectAttributes redirectAttributes) {
+		${className}Service.delete(id);
+		addMessage(redirectAttributes, "删除${functionNameSimple}成功");
+		return "redirect:"+Global.getAdminPath()+"/${viewPrefix}/?repage";
+	}
+
+}]]>
+	</content>
+</template>

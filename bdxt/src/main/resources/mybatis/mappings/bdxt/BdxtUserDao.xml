@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.bdxt.dao.BdxtUserDao">
+    
+	<sql id="bdxtUserColumns">
+		a.id AS "id",
+		a.open_id AS "openId",
+		a.phone AS "phone",
+		a.password AS "password",
+		a.nickname AS "nickname",
+		a.gender AS "gender",
+		a.city AS "city",
+		a.job AS "job",
+		a.head_url AS "headUrl",
+		a.wechat AS "wechat",
+		a.wechat_type AS "wechatType",
+		a.status AS "status",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="bdxtUserJoins">
+
+	</sql>
+	<!--通过openid获取用户详情 -->
+	<select id="getByopenid" resultType="BdxtUser">
+		SELECT
+		<include refid="bdxtUserColumns"/>
+		FROM bdxt_user a
+		<include refid="bdxtUserJoins"/>
+		WHERE a.open_id = #{openId}
+	</select>
+
+    <!--获取用户详情 -->
+	<select id="get" resultType="BdxtUser">
+		SELECT
+		bu.id as id,
+		bu.nickname as nickname,
+		bud.realname as realName,
+		bu.open_id as openId,
+		bu.phone as phone,
+		bu.head_url,
+		bud.user_sign_type as userSignType,
+		bud.user_type as userType,
+		bu.gender as gender,
+		bu.city as city,
+		-- 积分
+		IFNULL(bu.integral,0) as integral,
+		-- 金额
+		IFNULL(bu.capital,0) as capital,
+		bu.job as job,
+		bu.create_time as createTime,
+		bu.wechat as wechat,
+		IFNULL(sum(if(buf.capital_type=1,buf.capital, 0)),0) AS inCapital,
+		IFNULL(sum(if(buf.capital_type=2,buf.capital, 0)),0) AS outCapital,
+		bud.user_work_image_url as workImageUrl,
+		bud.height as height,
+		bud.weight as weight,
+		bud.bust   as bust,
+		bud.waist as waist,
+		bud.hipline as hipline,
+		bud.shoe_size as shoeSize,
+		bud.eye_color as eyeColor,
+		bud.hair_color as hairColor,
+		bud.work_experience as experience
+		FROM
+		bdxt_user bu
+		LEFT JOIN bdxt_user_detail bud ON bud.bdxt_user_id = bu.id AND bud.status=1
+		LEFT JOIN bdxt_user_fund_record buf on buf.bxdt_user_id=bu.id and buf.status=1
+		WHERE
+		1 = 1
+		AND bu.id=#{id}
+	</select>
+	<!--查询用户列表信息 -->
+	<select id="findList" resultType="BdxtUser">
+		SELECT
+		bu.id as id,
+		bu.nickname as nickname,
+		bud.realname as realName,
+		bu.open_id as openId,
+		bu.phone as phone,
+		bud.user_type as userType,
+		bu.gender as gender,
+		bu.city as city,
+		IFNULL(bu.integral,0) as integral,
+		bu.job as job,
+		IFNULL(bud.height,0) as height,
+		bu.create_time as createTime,
+		IFNULL(bud.bust,0) as bust,
+		IFNULL(bud.waist,0) as waist,
+		IFNULL(bud.hipline,0) as hipline,
+		bu.last_loginTime
+		FROM
+		bdxt_user bu
+		INNER JOIN bdxt_user_detail bud ON bud.bdxt_user_id = bu.id
+		<where>
+			<if test="gender != null">
+				AND bu.gender = #{gender}
+			</if>
+			<if test="realName!=null and realName!=''">
+				AND LOCATE(#{realName},bud.realname)>0
+			</if>
+			<if test="userType!=null">
+				AND bud.user_type=#{userType}
+			</if>
+			<if test="heightleft !=null">
+				AND bud.height &gt;=#{heightleft}
+			</if>
+			<if test="heightright !=null">
+				AND bud.height &lt;=#{heightright}
+			</if>
+			<if test="weightleft !=null">
+				AND bud.weight &gt;=#{weightleft}
+			</if>
+			<if test="weightright !=null">
+				AND bud.weight &lt;=#{weightright}
+			</if>
+			<if test="bustleft !=null">
+				AND bud.bust &gt;=#{bustleft}
+			</if>
+			<if test="bustright !=null">
+				AND bud.bust &lt;=#{bustright}
+			</if>
+			<if test="waistleft !=null">
+				AND bud.waist &gt;=#{waistleft}
+			</if>
+			<if test="waistright !=null">
+				AND bud.waist &lt;=#{waistright}
+			</if>
+			<if test="hiplineleft !=null">
+				AND bud.hipline &gt;=#{hiplineleft}
+			</if>
+			<if test="hiplineright !=null">
+				AND bud.hipline &lt;=#{hiplineright}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY bu.create_time DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BdxtUser">
+		SELECT 
+			<include refid="bdxtUserColumns"/>
+		FROM bdxt_user a
+		<include refid="bdxtUserJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bdxt_user(
+			id,
+			open_id,
+			phone,
+			password,
+			nickname,
+			gender,
+			city,
+			job,
+			head_url,
+			wechat
+		) VALUES (
+			#{id},
+			#{openId},
+			#{phone},
+			#{password},
+			#{nickname},
+			#{gender},
+			#{city},
+			#{job},
+			#{headUrl},
+			#{wechat}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bdxt_user SET
+		    open_id = #{openId},
+			phone = #{phone},
+			password = #{password},
+			nickname = #{nickname},
+			gender = #{gender},
+			city = #{city},
+			job = #{job},
+			head_url = #{headUrl},
+			wechat = #{wechat},
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+	<update id="updateCapital">
+		UPDATE bdxt_user SET
+		capital = #{capital}
+		WHERE id = #{id}
+	</update>
+	<update id="loginOut">
+		UPDATE bdxt_user SET
+		open_id = #{openId}
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM bdxt_user
+		WHERE id = #{id}
+	</update>
+    <!--app判断用户是否已存在 -->
+	<select id="queryTotalByName" resultType="int">
+		select count(*) from bdxt_user
+		<where>
+			<if test="phone != null and phone.trim() != ''">
+				and `phone` =#{phone}
+			</if>
+			<if test="loginOldPwd!=null and loginOldPwd!=''">
+				and `password` =#{loginOldPwd}
+			</if>
+		</where>
+	</select>
+	<!--app添加用户信息 -->
+	<insert id="saveUserInfo" useGeneratedKeys="true" keyProperty="bdxtUserId" parameterType="java.util.Map">
+		<selectKey keyProperty="bdxtUserId" resultType="String" order="BEFORE">
+			select replace(uuid(),'-','') from dual
+		</selectKey>
+     INSERT INTO bdxt_user(
+			id,
+		    open_id,
+			phone,
+			password,
+			nickname,
+			gender,
+			city,
+			job,
+			head_url,
+			wechat,
+		    status,
+		    create_time,
+		    update_time
+		) VALUES (
+			#{bdxtUserId},
+		    #{openId},
+			#{phone},
+			#{password},
+			#{nickname},
+			#{gender},
+			#{city},
+			#{job},
+			#{headUrl},
+			#{wechat},
+		    1,
+		    now(),
+		    now()
+		)
+	</insert>
+
+	<!--app修改密码 -->
+	<update id="updateUserPwd" >
+		Update bdxt_user Set
+		<if test="password!=null and password!=''">
+			password =#{password,jdbcType=VARCHAR},
+		</if>
+		update_time=now()
+		<where>
+			phone = #{phone,jdbcType=VARCHAR}
+		</where>
+	</update>
+    <!--app完善个人信息 -->
+	<update id="updateUserInfo" parameterType="java.util.Map">
+		UPDATE bdxt_user SET
+		<if test="openId!=null and openId!=''">open_id = #{openId},</if>
+		<if test="phone!=null and phone!=''">phone = #{phone},</if>
+		<if test="password!=null and password!=''">password = #{password},</if>
+		<if test="nickName!=null and nickName!=''">nickname = #{nickName},</if>
+		<if test="gender!=null">gender = #{gender},</if>
+		<if test="city!=null and city!=''">city = #{city},</if>
+		<if test="job!=null and job!=''">job = #{job},</if>
+		<if test="headUrl!=null and headUrl!=''">head_url = #{headUrl},</if>
+		<if test="wechat!=null and wechat!=''">wechat = #{wechat},</if>
+		<if test="status!=null and status!=''">status =#{status},</if>
+		<if test="lastLoginTime==1">last_loginTime =now(),</if>
+		<if test="integral!=null">integral =#{integral},</if>
+		update_time=now()
+		WHERE id = #{bdxtUserId}
+	</update>
+    <!--app 用户登录 -->
+	<select id="queryUserInfoByMap" resultType="BdxtUser" parameterType="java.util.Map">
+     SELECT
+		bu.id,
+		IFNULL(bu.nickname, "") AS nickname,
+		IFNULL(bud.realname, "") AS realName,
+		bu.open_id as openId,
+		bu.phone,
+		IFNULL(bud.user_sign_type, "") AS userSignType,
+		IFNULL(bud.user_type, "") AS userType,
+		IFNULL(bu.gender, "") AS gender,
+		IFNULL(bu.city, "") AS city,
+		bu.PASSWORD,
+		IFNULL(bu.job, "") AS job,
+		IFNULL(bu.head_url, "") AS headUrl,
+		IFNULL(bu.create_time, "") AS createTime,
+		IFNULL(bu.wechat, "") AS wechat,
+		IFNULL(bud.user_work_image_url, "") AS workImageUrl,
+		IFNULL(bud.height, "") AS height,
+		IFNULL(bud.weight, "") AS weight,
+		IFNULL(bud.bust, "") AS bust,
+		IFNULL(bud.waist, "") AS waist,
+		IFNULL(bud.hipline, "") AS hipline,
+		IFNULL(bud.shoe_size, "") AS shoeSize,
+		IFNULL(bud.eye_color, "") AS eyeColor,
+		IFNULL(bud.hair_color, "") AS hairColor,
+		IFNULL(bud.work_experience, "") AS experience,
+		IFNULL(bu.integral, 0) AS integral,
+		IFNULL(bu.capital, 0) AS capital
+		FROM
+		bdxt_user bu
+		INNER JOIN bdxt_user_detail bud ON bud.bdxt_user_id = bu.id
+		<where>
+		and bu.status=1
+		<if test="phone != null and phone != ''">
+			AND bu.phone = #{phone}
+			</if>
+		<if test="userId!=null and userId!=''">
+			AND bu.id=#{userId}
+		</if>
+		</where>
+	</select>
+</mapper>
