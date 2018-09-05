@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="bdxt:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="ROOT.war">
-      <element id="artifact" artifact-name="bdxt:war exploded" />
-    </root>
-  </artifact>
-</component>
