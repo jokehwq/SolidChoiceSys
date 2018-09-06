@@ -23,15 +23,15 @@
         <!-- 运行命令: mvn mybatis-generator:generate -e -->
         <!--<classPathEntry.mysql.location>${basedir}/target/${project.artifactId}/WEB-INF/lib/mysql-connector-java-${mysql.connector.java.version}.jar</classPathEntry.mysql.location>-->
         <classPathEntry.mysql.location>
-            D:/MyDownloads/maven-repo/mysql/mysql-connector-java/5.1.39/mysql-connector-java-5.1.39.jar
+            D:/.m2/repository/mysql/mysql-connector-java/5.1.39/mysql-connector-java-5.1.39.jar
         </classPathEntry.mysql.location>
         <javaModelGenerator.targetProject>${basedir}/src/main/java</javaModelGenerator.targetProject>
-        <sqlMapGenerator.targetProject>${basedir}/src/main/resources</sqlMapGenerator.targetProject>
+        <sqlMapGenerator.targetProject>${basedir}/src/main/resources/mybatis/mappings</sqlMapGenerator.targetProject>
         <javaClientGenerator.targetProject>${basedir}/src/main/java</javaClientGenerator.targetProject>
         <mybatis.generator.configurationFile>${basedir}/src/main/resources/generatorConfig.xml
         </mybatis.generator.configurationFile>
         <mybatis.generator.overwrite>true</mybatis.generator.overwrite>
-
+        mybatis/mappings/solidchoice/BannerMapper.xml
     </properties>
     <dependencies>
         <!--mysql jdbc驱动 -->

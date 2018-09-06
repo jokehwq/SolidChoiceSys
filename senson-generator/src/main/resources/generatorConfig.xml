@@ -16,19 +16,19 @@
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
 
-		<javaModelGenerator targetPackage="com.senson.entity"
+		<javaModelGenerator targetPackage="com.foreveross.webbase.solidchoice.entity"
 							targetProject="${javaModelGenerator.targetProject}">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator targetPackage="mapper"
+		<sqlMapGenerator targetPackage="solidchoice"
 						 targetProject="${sqlMapGenerator.targetProject}">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 
 		<javaClientGenerator type="XMLMAPPER"
-							 targetPackage="com.senson.mapper" targetProject="${javaClientGenerator.targetProject}">
+							 targetPackage="com.foreveross.webbase.solidchoice.dao" targetProject="${javaClientGenerator.targetProject}">
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 
