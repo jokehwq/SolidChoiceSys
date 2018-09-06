@@ -22,7 +22,7 @@
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator targetPackage="solidchoice"
+		<sqlMapGenerator targetPackage="mybatis.mappings"
 						 targetProject="${sqlMapGenerator.targetProject}">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
@@ -51,7 +51,7 @@
 		<table tableName="a_sys_log" domainObjectName="SysLog"></table>
 		<table tableName="a_sys_user" domainObjectName="SysUser"></table>
 		<table tableName="a_topic" domainObjectName="Topic"></table>
-		<table tableName="a_topic_details" domainObjectName="TopicDetails"></table>
+		<!--<table tableName="a_topic_details" domainObjectName="TopicDetails"></table>-->
 		<table tableName="a_topic_forward" domainObjectName="TopicForward"></table>
 		<table tableName="a_topic_top" domainObjectName="TopicTop"></table>
 		<table tableName="a_user" domainObjectName="User"></table>
