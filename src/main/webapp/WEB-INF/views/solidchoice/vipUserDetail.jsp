@@ -288,18 +288,19 @@
                 bindDeleteEvent(id);
             })
         });
+
         //绑定删除
         function bindDeleteEvent(id) {
             $('.delete-img1').click(function (e) {
                 e.stopPropagation();
                 var attachUrl;
                 var img = $(e.currentTarget).find('img').attr('src');
-                if(img!=null){
-                    attachUrl=img;
+                if (img != null) {
+                    attachUrl = img;
                 }
                 var video = $(e.currentTarget).find('video').attr('src');
-                if(video!=null){
-                    attachUrl=video;
+                if (video != null) {
+                    attachUrl = video;
                 }
                 layer.open({
                     type: 0,
@@ -311,7 +312,7 @@
                         $.ajax({
                             type: "POST",
                             url: "${ctx}/bdxt/bdxtAttachment/update",
-                            data: {"id": id,"attachUrl":attachUrl},
+                            data: {"id": id, "attachUrl": attachUrl},
                             success: function (data) {
                                 alert(data);
                                 //刷新当前页
@@ -340,7 +341,7 @@
                         $.ajax({
                             type: "POST",
                             url: "${ctx}/bdxt/bdxtAttachment/update",
-                            data: {"id": id,"bdxtTag":tagId},
+                            data: {"id": id, "bdxtTag": tagId},
                             success: function (data) {
                                 alert(data);
                                 //刷新当前页
@@ -357,6 +358,7 @@
 
             })
         }
+
         //作品保存 取消 时候把X去掉
         function hideDeleteImg(e) {
             var nodeList = $($(e.currentTarget).parents('.works-detail-item')[0]).find('.works-item');
@@ -371,6 +373,7 @@
             $(e.currentTarget).siblings('.btn-save').hide()
             $(e.currentTarget).siblings('.btn-cancel').hide()
         }
+
         function imgShow(outerdiv, innerdiv, bigimg, _this) {
             var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
             $(bigimg).attr("src", src);//设置#bigimg元素的src属性
@@ -431,8 +434,8 @@
     <div class="control-group user-detail-info">
         <ul class="user-detail-ul">
             <li class="user-detail-li user-detail-li-active" name="info-detail">基本信息</li>
-           <%-- <li class="user-detail-li" name="works-detail">作品</li>
-            <li class="user-detail-li" name="videos-detail">视频</li>--%>
+            <%-- <li class="user-detail-li" name="works-detail">作品</li>
+             <li class="user-detail-li" name="videos-detail">视频</li>--%>
         </ul>
     </div>
     <div class="info-detail">
@@ -460,14 +463,7 @@
                                女
                            </c:if>
                         </span> |
-                        <%--<span class="clearance">
-                           <c:if test="${bdxtUser.userSignType == 1}">
-                               艺人
-                           </c:if>
-					       <c:if test="${bdxtUser.userSignType == 2}">
-                               商家
-                           </c:if>
-                        </span>--%></div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -500,181 +496,31 @@
                         <span class="info-row-span1">联系电话</span>
                         <span class="info-row-span">${vipUser.phoneModel}</span>
                     </label>
-                    <label class="control-label">
-                        <span class="info-row-span1">账户余额</span>
-                        <span class="info-row-span">
-                            <span>￥</span><span>${vipUser.inCapital}</span>
-                        </span>
-                    </label>
                 </div>
-            </div>
-        </div>
-
-        <div class="info-item">
-            <div class="control-group info-row-item-title">
-                模特卡资料
             </div>
             <div class="control-group">
                 <div class="info-row-item">
                     <label class="control-label">
-                        <span class="info-row-span1">身高</span><span class="info-row-span">
-                        <c:if test=" ${bdxtUser.height !=null}">
-                            ${bdxtUser.height}cm
-                        </c:if>
-                      </span>
+                        <span class="info-row-span1">关注</span>
+                        <span class="info-row-span">${followerNum}</span>
                     </label>
                     <label class="control-label">
-                        <span class="info-row-span1">体重</span><span class="info-row-span">
-                        <c:if test=" ${bdxtUser.weight!=null}">
-                            ${bdxtUser.weight}kg
-                        </c:if>
-                       </span>
+                        <span class="info-row-span1">粉丝</span>
+                        <span class="info-row-span">${followingNum}</span>
                     </label>
                 </div>
             </div>
             <div class="control-group">
                 <div class="info-row-item">
                     <label class="control-label">
-                        <span class="info-row-span1">胸围</span>
-                        <span class="info-row-span">
-                        <c:if test=" ${bdxtUser.bust!=null}">
-                            ${bdxtUser.bust}cm
-                        </c:if>
-                        </span>
+                        <span class="info-row-span1">发起的投票</span>
+                        <span class="info-row-span">${topicCount}</span>
                     </label>
                     <label class="control-label">
-                        <span class="info-row-span1">腰围</span>
-                        <span class="info-row-span">
-                        <c:if test="${bdxtUser.waist!=null}">
-                            ${bdxtUser.waist}cm
-                        </c:if>
-                        </span>
+                        <span class="info-row-span1">参与的投票</span>
+                        <span class="info-row-span">${initiatingTopic}</span>
                     </label>
                 </div>
-            </div>
-            <div class="control-group">
-                <div class="info-row-item">
-                    <label class="control-label">
-                        <span class="info-row-span1">臀围</span>
-                        <span class="info-row-span">
-                        <c:if test="${bdxtUser.hipline!=null}">
-                            ${bdxtUser.hipline}cm
-                        </c:if>
-                        </span>
-                    </label>
-                    <label class="control-label">
-                        <span class="info-row-span1">鞋码</span>
-                        <span class="info-row-span">
-                            <span>${bdxtUser.shoeSize}</span>
-                        </span>
-                    </label>
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="info-row-item">
-                    <label class="control-label">
-                        <span class="info-row-span1">眼睛颜色</span>
-                        <span class="info-row-span">${bdxtUser.eyeColor}</span>
-                    </label>
-                    <label class="control-label">
-                        <span class="info-row-span1">头发颜色</span>
-                        <span class="info-row-span">
-                            <span>${bdxtUser.hairColor}</span>
-                        </span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="info-item">
-            <div class="control-group info-row-item-title">
-                报价
-            </div>
-            <div class="control-group info-row-item">
-                <div>
-                    <span>议价预约</span><span style="margin-left: 10px">
-
-                     <c:if test="${bargainReservateList != null}">
-                         <c:forEach items="${bargainReservateList}" var="bargain">
-                             <c:if test="${bargain.parentName != null}">
-                                 ${bargain.parentName}
-                             </c:if>
-                             <c:if test="${bargain.childName != null}">
-                                 - ${bargain.childName}
-                             </c:if>
-                             <c:if test="${bargain.remark != null}">
-                                 - ${bargain.remark}
-                             </c:if>
-                             </br>
-                         </c:forEach>
-                     </c:if>
-
-                    </span>
-                </div>
-
-                <div>
-                    <span>买家秀报价</span><span style="margin-left: 10px">
-                      <c:if test="${bdxtQuoteBuyer.quotePrice != null}">
-                          ${bdxtQuoteBuyer.quotePrice}
-                      </c:if>
-                      <c:if test="${bdxtQuoteBuyer.remark != null}">
-                          - ${bdxtQuoteBuyer.remark}
-                      </c:if>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="info-item">
-            <div class="control-group info-row-item-title">
-                个人标签
-            </div>
-            <div class="control-group">
-                <div class="info-row-item">
-                    <label class="control-label">
-                        <span class="info-row-span1">风格标签</span>
-                        <span class="info-row-span" style="width: 200px">
-                           <%-- 欧美 气质 性感 中国风 运动--%>
-                            ${tagList[0].tagName}
-                        </span>
-                    </label>
-                    <label class="control-label">
-                        <span class="info-row-span1">外貌标签</span>
-                        <span class="info-row-span" style="width: 200px">
-                            <span>
-                                <%--轮廓清晰 丰满 双眼皮--%>
-                                ${tagList[1].tagName}
-                            </span>
-                        </span>
-                    </label>
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="info-row-item">
-                    <label class="control-label">
-                        <span class="info-row-span1">体型标签</span>
-                        <span class="info-row-span" style="width: 200px">
-                            <%--丰满--%>
-                            ${tagList[2].tagName}
-                        </span>
-                    </label>
-                    <label class="control-label">
-                        <span class="info-row-span1">魅力部位</span>
-                        <span class="info-row-span" style="width: 200px">
-                            <span>
-                                <%--眼镜 鼻梁--%>
-                                ${tagList[3].tagName}
-                            </span>
-                        </span>
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="info-item">
-            <div class="control-group info-row-item-title">
-                工作经验
-            </div>
-            <div class="control-group info-row-item">
-                <%--工作经验内容--%>
-                ${bdxtUser.experience}
             </div>
         </div>
     </div>

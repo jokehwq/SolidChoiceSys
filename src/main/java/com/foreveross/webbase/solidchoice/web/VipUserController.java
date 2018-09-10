@@ -7,9 +7,9 @@ import com.foreveross.webbase.common.persistence.Page;
 import com.foreveross.webbase.common.utils.StringUtils;
 import com.foreveross.webbase.common.web.BaseController;
 import com.foreveross.webbase.solidchoice.entity.IntegralRecord;
+import com.foreveross.webbase.solidchoice.entity.UserUnion;
 import com.foreveross.webbase.solidchoice.entity.VipUser;
-import com.foreveross.webbase.solidchoice.service.IntegralRecordService;
-import com.foreveross.webbase.solidchoice.service.VipUserService;
+import com.foreveross.webbase.solidchoice.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,12 @@ public class VipUserController extends BaseController {
     private VipUserService userService;
     @Autowired
     private IntegralRecordService integralRecordService;
+    @Autowired
+    private UserUnionService userUnionService;
+    @Autowired
+    private TopicService topicService;
+    @Autowired
+    private UserCollectionService userCollectionService;
 
     @RequiresPermissions("solidChoice:vipUser:view")
     @RequestMapping(value = {"list", ""})
@@ -64,9 +70,20 @@ public class VipUserController extends BaseController {
     public String detail(String id) {
         VipUser vipUser = userService.get(id);
         attr("vipUser",vipUser);
-       /* integralRecord.setUserId(id);
-        Page<IntegralRecord> page = integralRecordService.findPage(new Page<IntegralRecord>(request(), response()), integralRecord);
-        attr("page", page);*/
+
+        //关注的人数量
+        String followerNum = userUnionService.findFollowerNum(id);
+        attr("followerNum",followerNum);
+        //粉丝数量
+        String followingNum = userUnionService.findFollowingNum(id);
+        attr("followingNum",followingNum);
+        //发起的投票
+        String topicCount = topicService.findTopicCount(id);
+        attr("topicCount",topicCount);
+        //参与的投票
+        String initiatingTopic = userCollectionService.findInitiatingTopicCount(id);
+        attr("initiatingTopic",initiatingTopic);
+
         return "solidchoice/vipUserDetail";
     }
 }

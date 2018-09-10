@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.solidchoice.dao.TopicMapper">
+    <resultMap id="BaseResultMap" type="com.foreveross.webbase.solidchoice.entity.Topic">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="topic_name" jdbcType="VARCHAR" property="topicName"/>
+        <result column="topic_type" jdbcType="INTEGER" property="topicType"/>
+        <result column="topic_label" jdbcType="VARCHAR" property="topicLabel"/>
+        <result column="release_form" jdbcType="INTEGER" property="releaseForm"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="activity_rules" jdbcType="VARCHAR" property="activityRules"/>
+        <result column="integral_mechanism" jdbcType="VARCHAR" property="integralMechanism"/>
+        <result column="is_recommend" jdbcType="INTEGER" property="isRecommend"/>
+        <result column="recommend_time" jdbcType="TIMESTAMP" property="recommendTime"/>
+        <result column="participants" jdbcType="INTEGER" property="participants"/>
+        <result column="img_url" jdbcType="VARCHAR" property="imgUrl"/>
+        <result column="is_del" jdbcType="INTEGER" property="isDel"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, user_id, topic_name, topic_type, topic_label, release_form, note, status, address, 
+    activity_rules, integral_mechanism, is_recommend, recommend_time, participants, img_url, 
+    is_del, create_time
+  </sql>
+
+    <select id="get" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from a_topic
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+    delete from a_topic
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.foreveross.webbase.solidchoice.entity.Topic">
+        insert into a_topic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="topicName != null">
+                topic_name,
+            </if>
+            <if test="topicType != null">
+                topic_type,
+            </if>
+            <if test="topicLabel != null">
+                topic_label,
+            </if>
+            <if test="releaseForm != null">
+                release_form,
+            </if>
+            <if test="note != null">
+                note,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="activityRules != null">
+                activity_rules,
+            </if>
+            <if test="integralMechanism != null">
+                integral_mechanism,
+            </if>
+            <if test="isRecommend != null">
+                is_recommend,
+            </if>
+            <if test="recommendTime != null">
+                recommend_time,
+            </if>
+            <if test="participants != null">
+                participants,
+            </if>
+            <if test="imgUrl != null">
+                img_url,
+            </if>
+            <if test="isDel != null">
+                is_del,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="topicName != null">
+                #{topicName,jdbcType=VARCHAR},
+            </if>
+            <if test="topicType != null">
+                #{topicType,jdbcType=INTEGER},
+            </if>
+            <if test="topicLabel != null">
+                #{topicLabel,jdbcType=VARCHAR},
+            </if>
+            <if test="releaseForm != null">
+                #{releaseForm,jdbcType=INTEGER},
+            </if>
+            <if test="note != null">
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="activityRules != null">
+                #{activityRules,jdbcType=VARCHAR},
+            </if>
+            <if test="integralMechanism != null">
+                #{integralMechanism,jdbcType=VARCHAR},
+            </if>
+            <if test="isRecommend != null">
+                #{isRecommend,jdbcType=INTEGER},
+            </if>
+            <if test="recommendTime != null">
+                #{recommendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="participants != null">
+                #{participants,jdbcType=INTEGER},
+            </if>
+            <if test="imgUrl != null">
+                #{imgUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                #{isDel,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.foreveross.webbase.solidchoice.entity.Topic">
+        update a_topic
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="topicName != null">
+                topic_name = #{topicName,jdbcType=VARCHAR},
+            </if>
+            <if test="topicType != null">
+                topic_type = #{topicType,jdbcType=INTEGER},
+            </if>
+            <if test="topicLabel != null">
+                topic_label = #{topicLabel,jdbcType=VARCHAR},
+            </if>
+            <if test="releaseForm != null">
+                release_form = #{releaseForm,jdbcType=INTEGER},
+            </if>
+            <if test="note != null">
+                note = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="activityRules != null">
+                activity_rules = #{activityRules,jdbcType=VARCHAR},
+            </if>
+            <if test="integralMechanism != null">
+                integral_mechanism = #{integralMechanism,jdbcType=VARCHAR},
+            </if>
+            <if test="isRecommend != null">
+                is_recommend = #{isRecommend,jdbcType=INTEGER},
+            </if>
+            <if test="recommendTime != null">
+                recommend_time = #{recommendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="participants != null">
+                participants = #{participants,jdbcType=INTEGER},
+            </if>
+            <if test="imgUrl != null">
+                img_url = #{imgUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="findTopicCount" resultType="java.lang.String" parameterType="java.lang.String">
+    select count(id)
+    from a_topic WHERE  user_id = #{userId}
+  </select>
+</mapper>
