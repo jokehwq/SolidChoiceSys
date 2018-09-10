@@ -85,6 +85,7 @@
                         </c:if>
                     </c:otherwise>--%>
                 </c:choose>
+
             </div>
             <input id="filepath" type="hidden" name="url" value="${banner.id}" accept="image/gif,image/jpeg">
             <input name="file" type="file" onchange="previewImage(this,400,300)" style="display: none;" id="previewImg">
