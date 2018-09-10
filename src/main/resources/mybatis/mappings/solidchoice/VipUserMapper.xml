@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.solidchoice.dao.VipUserMapper">
+  <resultMap id="BaseResultMap" type="com.foreveross.webbase.solidchoice.entity.VipUser">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="test_code" jdbcType="VARCHAR" property="testCode" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="job_title" jdbcType="VARCHAR" property="jobTitle" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="intro" jdbcType="VARCHAR" property="intro" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
+    <result column="user_type" jdbcType="VARCHAR" property="userType" />
+    <result column="mobile_ver" jdbcType="VARCHAR" property="mobileVer" />
+    <result column="phone_model" jdbcType="VARCHAR" property="phoneModel" />
+    <result column="operating_system" jdbcType="VARCHAR" property="operatingSystem" />
+    <result column="system_ver" jdbcType="VARCHAR" property="systemVer" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="user_status" jdbcType="INTEGER" property="userStatus" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="is_member" jdbcType="INTEGER" property="isMember" />
+    <result column="avatar_path" jdbcType="VARCHAR" property="avatarPath" />
+    <result column="background_path" jdbcType="VARCHAR" property="backgroundPath" />
+    <result column="birth_data" jdbcType="VARCHAR" property="birthData" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="is_disable" jdbcType="INTEGER" property="isDisable" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.foreveross.webbase.solidchoice.entity.VipUser">
+
+    <result column="label" jdbcType="LONGVARCHAR" property="label" />
+  </resultMap>
+  <sql id="Base_Column_List">
+
+    id, phone, test_code, email, nick_name, job_title, level, name, intro, password, gender,
+    user_type, mobile_ver, phone_model, operating_system, system_ver, open_id, user_status, 
+    token, is_member, avatar_path, background_path, birth_data, remarks, last_login_time, 
+    area, is_disable, is_del, update_time, create_time
+  </sql>
+
+
+  <select id="get" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    from a_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="delete" parameterType="java.lang.String">
+
+    delete from a_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.foreveross.webbase.solidchoice.entity.VipUser">
+    insert into a_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="testCode != null">
+        test_code,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="nickName != null">
+        nickName,
+      </if>
+      <if test="jobTitle != null">
+        job_title,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="intro != null">
+        intro,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="mobileVer != null">
+        mobile_ver,
+      </if>
+      <if test="phoneModel != null">
+        phone_model,
+      </if>
+      <if test="operatingSystem != null">
+        operating_system,
+      </if>
+      <if test="systemVer != null">
+        system_ver,
+      </if>
+      <if test="openId != null">
+        open_id,
+      </if>
+      <if test="userStatus != null">
+        user_status,
+      </if>
+      <if test="token != null">
+        token,
+      </if>
+      <if test="isMember != null">
+        is_member,
+      </if>
+      <if test="avatarPath != null">
+        avatar_path,
+      </if>
+      <if test="backgroundPath != null">
+        background_path,
+      </if>
+      <if test="birthData != null">
+        birth_data,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="isDisable != null">
+        is_disable,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="label != null">
+        label,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="testCode != null">
+        #{testCode,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobTitle != null">
+        #{jobTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="mobileVer != null">
+        #{mobileVer,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneModel != null">
+        #{phoneModel,jdbcType=VARCHAR},
+      </if>
+      <if test="operatingSystem != null">
+        #{operatingSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="systemVer != null">
+        #{systemVer,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null">
+        #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="token != null">
+        #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="isMember != null">
+        #{isMember,jdbcType=INTEGER},
+      </if>
+      <if test="avatarPath != null">
+        #{avatarPath,jdbcType=VARCHAR},
+      </if>
+      <if test="backgroundPath != null">
+        #{backgroundPath,jdbcType=VARCHAR},
+      </if>
+      <if test="birthData != null">
+        #{birthData,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="isDisable != null">
+        #{isDisable,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="com.foreveross.webbase.solidchoice.entity.VipUser">
+    update a_user
+    <set>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="testCode != null">
+        test_code = #{testCode,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        nickName = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobTitle != null">
+        job_title = #{jobTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        intro = #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="mobileVer != null">
+        mobile_ver = #{mobileVer,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneModel != null">
+        phone_model = #{phoneModel,jdbcType=VARCHAR},
+      </if>
+      <if test="operatingSystem != null">
+        operating_system = #{operatingSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="systemVer != null">
+        system_ver = #{systemVer,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null">
+        user_status = #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="token != null">
+        token = #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="isMember != null">
+        is_member = #{isMember,jdbcType=INTEGER},
+      </if>
+      <if test="avatarPath != null">
+        avatar_path = #{avatarPath,jdbcType=VARCHAR},
+      </if>
+      <if test="backgroundPath != null">
+        background_path = #{backgroundPath,jdbcType=VARCHAR},
+      </if>
+      <if test="birthData != null">
+        birth_data = #{birthData,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="isDisable != null">
+        is_disable = #{isDisable,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="label != null">
+        label = #{label,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="findList" resultType="com.foreveross.webbase.solidchoice.entity.VipUser">
+    select <include refid="Base_Column_List" />
+    from a_user s
+    <where>
+      <if test="name != null and name != ''">
+        AND s.name LIKE
+        <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+        <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+        <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+      </if>
+      <if test="openId != null and openId != ''">
+        AND s.openId LIKE
+        <if test="dbName == 'oracle'">'%'||#{openId}||'%'</if>
+        <if test="dbName == 'mssql'">'%'+#{openId}+'%'</if>
+        <if test="dbName == 'mysql'">concat('%',#{openId},'%')</if>
+      </if>
+    </where>
+    <choose>
+      <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+        ORDER BY ${page.orderBy}
+      </when>
+      <otherwise>
+      </otherwise>
+    </choose>
+  </select>
+
+</mapper>

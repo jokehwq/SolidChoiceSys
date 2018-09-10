@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foreveross.webbase.solidchoice.dao.IntegralRecordMapper">
+  <resultMap id="BaseResultMap" type="com.foreveross.webbase.solidchoice.entity.IntegralRecord">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="integral_id" jdbcType="VARCHAR" property="integralId" />
+    <result column="operation_type" jdbcType="VARCHAR" property="operationType" />
+    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="capital" jdbcType="INTEGER" property="capital" />
+    <result column="integral_type" jdbcType="INTEGER" property="integralType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, user_id, integral_id, operation_type, type_id, note, capital, integral_type, 
+    create_time
+  </sql>
+
+  <select id="get" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from a_integral_record
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="delete" parameterType="java.lang.String">
+    delete from a_integral_record
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.foreveross.webbase.solidchoice.entity.IntegralRecord">
+    insert into a_integral_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="integralId != null">
+        integral_id,
+      </if>
+      <if test="operationType != null">
+        operation_type,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="capital != null">
+        capital,
+      </if>
+      <if test="integralType != null">
+        integral_type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="integralId != null">
+        #{integralId,jdbcType=VARCHAR},
+      </if>
+      <if test="operationType != null">
+        #{operationType,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="capital != null">
+        #{capital,jdbcType=INTEGER},
+      </if>
+      <if test="integralType != null">
+        #{integralType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="com.foreveross.webbase.solidchoice.entity.IntegralRecord">
+
+    update a_integral_record
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="integralId != null">
+        integral_id = #{integralId,jdbcType=VARCHAR},
+      </if>
+      <if test="operationType != null">
+        operation_type = #{operationType,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="capital != null">
+        capital = #{capital,jdbcType=INTEGER},
+      </if>
+      <if test="integralType != null">
+        integral_type = #{integralType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="findList" resultType="com.foreveross.webbase.solidchoice.entity.IntegralRecord" parameterType="com.foreveross.webbase.solidchoice.entity.IntegralRecord">
+    select <include refid="Base_Column_List" />
+    from a_integral_record s
+    <where>
+      <if test="userId != null and userId != ''">
+        AND user_id = #{userId}
+      </if>
+     <!-- <if test="name != null and name != ''">
+        AND s.name LIKE
+        <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+        <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+        <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+      </if>
+      <if test="openId != null and openId != ''">
+        AND s.openId LIKE
+        <if test="dbName == 'oracle'">'%'||#{openId}||'%'</if>
+        <if test="dbName == 'mssql'">'%'+#{openId}+'%'</if>
+        <if test="dbName == 'mysql'">concat('%',#{openId},'%')</if>
+      </if>-->
+    </where>
+    <choose>
+      <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+        ORDER BY ${page.orderBy}
+      </when>
+      <otherwise>
+      </otherwise>
+    </choose>
+  </select>
+
+</mapper>

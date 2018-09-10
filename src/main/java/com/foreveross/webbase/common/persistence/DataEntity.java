@@ -3,16 +3,15 @@
  */
 package com.foreveross.webbase.common.persistence;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Length;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foreveross.webbase.common.utils.IdGen;
 import com.foreveross.webbase.system.sys.entity.User;
 import com.foreveross.webbase.system.sys.utils.UserUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.Date;
 
 /**
  * 数据Entity类
