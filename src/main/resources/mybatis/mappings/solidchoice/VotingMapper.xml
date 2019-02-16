@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.foreveross.webbase.solidchoice.dao.VotingMapper" >
+    <resultMap id="BaseResultMap" type="com.foreveross.webbase.solidchoice.entity.Voting" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="topic_id" property="topicId" jdbcType="VARCHAR" />
+        <result column="supports" property="supports" jdbcType="INTEGER" />
+        <result column="opposes" property="opposes" jdbcType="INTEGER" />
+        <result column="win_integrals" property="winIntegrals" jdbcType="DECIMAL" />
+        <result column="current_rank" property="currentRank" jdbcType="INTEGER" />
+        <result column="comments" property="comments" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="DATE" />
+        <collection property="topic" javaType="com.foreveross.webbase.solidchoice.entity.Topic">
+        	 <id column="b_id" property="id" jdbcType="VARCHAR" />
+	        <result column="User_id" property="userId" jdbcType="VARCHAR" />
+	        <result column="topic_name" property="topicName" jdbcType="VARCHAR" />
+	        <result column="topic_type" property="topicType" jdbcType="INTEGER" />
+	        <result column="topic_label" property="topicLabel" jdbcType="VARCHAR" />
+	        <result column="release_form" property="releaseForm" jdbcType="INTEGER" />
+	        <result column="b_content" property="note" jdbcType="VARCHAR" />
+	        <result column="status" property="status" jdbcType="INTEGER" />
+	        <result column="address" property="address" jdbcType="VARCHAR" />
+	        <result column="activity_rules" property="activityRules" jdbcType="VARCHAR" />
+	        <result column="integral_mechanism" property="integralMechanism" jdbcType="VARCHAR" />
+	        <result column="is_recommend" property="isRecommend" jdbcType="INTEGER" />
+	        <result column="recommend_time" property="recommendTime" jdbcType="DATE" />
+	        <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+	        <result column="is_del" property="isDel" jdbcType="INTEGER" />
+        </collection>
+        <collection property="comment" javaType="java.util.List" ofType="com.foreveross.webbase.solidchoice.entity.TopicComment">
+        	 <id column="c_id" property="id" jdbcType="VARCHAR" />
+        <result column="topic_id" property="topicId" jdbcType="VARCHAR" />
+        <result column="com_uid" property="comUid" jdbcType="VARCHAR" />
+        <result column="c_content" property="content" jdbcType="VARCHAR" />
+        <!-- <result column="create_time" property="createTime" jdbcType="DATE" /> -->
+        <!--  <result column="is_del" property="isDel" jdbcType="INTEGER" /> -->
+        </collection>
+        <!-- <result column="is_flag" property="delFlag" jdbcType="INTEGER" /> -->
+       <!--  <association property="topic" javaType="com.foreveross.webbase.solidchoice.entity.Topic" resultMap="TopicResultMap"></association>
+   		<association property="comment" javaType="com.foreveross.webbase.solidchoice.entity.TopicComment" resultMap="CommentResultMap"></association> -->
+    </resultMap>
+    
+    <resultMap id="TopicResultMap" type="com.foreveross.webbase.solidchoice.entity.Topic" >
+         <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="topic_id" property="topicId" jdbcType="VARCHAR" />
+        <result column="com_uid" property="comUid" jdbcType="VARCHAR" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="DATE" />
+         <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    </resultMap>
+    
+     <resultMap id="CommentResultMap"  type="com.foreveross.webbase.solidchoice.entity.TopicComment" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="topic_id" property="topicId" jdbcType="VARCHAR" />
+        <result column="com_uid" property="comUid" jdbcType="VARCHAR" />
+        <result column="c_content" property="content" jdbcType="VARCHAR" />
+        <!-- <result column="create_time" property="createTime" jdbcType="DATE" /> -->
+         <result column="is_del" property="isDel" jdbcType="INTEGER" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+		<!--    
+		a.id as id , 
+        a.topic_id as topic_id, 
+        a.supports as supports, 
+        a.opposes as opposes,
+        a.win_integrals as  win_integrals ,
+        a.current_rank as current_rank,
+		a.comments as comments,
+		a.create_time as create_time,
+		a.is_del as is_del,
+		b.id as id,
+		b.User_id as User_id,
+		b.topic_name as topic_name,
+		b.topic_type topic_type,
+		b.topic_label as topic_label,
+		b.release_form as release_form,
+		b.content as content,
+		b.status as status,
+		b.address as address,
+		b.activity_rules as activity_rules,
+		b.integral_mechanism as integral_mechanism,
+		b.is_recommend as is_recommend,
+		b.recommend_time as recommend_time,
+		b.img_url as img_url,
+		b.is_del as is_del,
+		c.topic_id as topic_id,
+		c.com_uid as com_uid,
+		c.content as content,
+		c.create_time as create_time,
+		c.is_del as is_del 
+		-->
+    </sql>
+    <select id="selectVotingList" resultMap="BaseResultMap">
+       	SELECT
+		a.id as id , 
+        a.topic_id as topic_id, 
+        a.supports as supports, 
+        a.opposes as opposes,
+        a.win_integrals as  win_integrals ,
+        a.current_rank as current_rank,
+		a.comments as comments,
+		a.create_time as create_time,
+		a.is_del as is_del,
+		b.STATUS as status
+		FROM a_topic_count as a LEFT JOIN a_topic as b ON a.topic_id = b.id WHERE b.is_del = 20
+
+    </select>
+    <select id="findList" resultMap="BaseResultMap">
+         SELECT
+		a.id as id , 
+        a.topic_id as topic_id, 
+        a.supports as supports, 
+        a.opposes as opposes,
+        a.win_integrals as  win_integrals ,
+        a.current_rank as current_rank,
+		a.comments as comments,
+		a.create_time as create_time,
+		a.is_del as is_del,
+		b.STATUS as status
+		FROM a_topic_count as a LEFT JOIN a_topic as b ON a.topic_id = b.id WHERE b.is_del = 20
+    </select>
+
+    <!-- 根据主键查询 -->
+    <select id="selectVotingById" resultMap="BaseResultMap">
+    		SELECT
+			a.id AS id,
+			a.topic_id AS topic_id,
+			a.supports AS supports,
+			a.opposes AS opposes,
+			a.win_integrals AS win_integrals,
+			a.current_rank AS current_rank,
+			a.comments AS comments,
+			a.create_time AS create_time,
+			b.id AS b_id,
+			b.User_id AS User_id,
+			b.topic_name AS topic_name,
+			b.topic_type topic_type,
+			b.topic_label AS topic_label,
+			b.release_form AS release_form,
+			b.content AS b_content,
+			b. STATUS AS STATUS,
+			b.address AS address,
+			b.activity_rules AS activity_rules,
+			b.integral_mechanism AS integral_mechanism,
+			b.is_recommend AS is_recommend,
+			b.recommend_time AS recommend_time,
+			b.img_url AS img_url,
+			b.is_del AS is_del,
+			c.topic_id AS topic_id,
+			c.com_uid AS com_uid,
+			c.content AS c_content,
+			c.create_time AS create_time
+			FROM
+				a_topic_count AS a
+			LEFT JOIN a_topic AS b ON a.topic_id = b.id
+			LEFT JOIN a_comment AS c ON c.topic_id = b.id
+			WHERE
+				b.is_del = 20 and a.id = #{id}
+				
+			order by a.create_time desc
+    </select>
+    
+    
+    <insert id="insertVoting">
+    	insert into a_topic_count   <include refid="Base_Column_List"/> 
+    	values (#{id}, #{topicId}, #{supports}, #{opposes}, #{winIntegrals}, #{currentRank}, #{comments}, #{createTime})
+    </insert>
+    
+    <!-- 根据主键修改 -->
+    <update id="updateVotingById">
+    	update a_topic_count set
+    	topic_id = #{topicId},
+    	supports = #{supports},
+    	opposes = #{opposes},
+    	win_integrals = #{winIntegrals},
+    	current_rank = #{currentRank},
+    	comments = #{comments},
+    	create_time = #{createTime}
+    	where
+    	id = #{id}
+    </update>
+    
+    <!-- 根据主键删除 逻辑删除 -->
+    <update id="delVotingById">
+    	update a_topic set
+    	is_del = 10 where id = #{id}
+    </update>
+    
+      <!-- 修改审核状态 -->
+    <update id="checkStatus">
+    	update a_topic set
+    	status = #{status} where id = #{id}
+    </update>
+    
+         
+</mapper>

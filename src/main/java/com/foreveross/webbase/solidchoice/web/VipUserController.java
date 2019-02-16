@@ -27,7 +27,7 @@ import java.util.List;
 @RequestMapping(value = "${adminPath}/solidChoice/vipUser")
 public class VipUserController extends BaseController {
     @Autowired
-    private VipUserService userService;
+    private VipUserService vipUserService;
     @Autowired
     private IntegralRecordService integralRecordService;
     @Autowired
@@ -40,7 +40,7 @@ public class VipUserController extends BaseController {
     @RequiresPermissions("solidChoice:vipUser:view")
     @RequestMapping(value = {"list", ""})
     public String list(VipUser user) {
-        Page<VipUser> page = userService.findPage(new Page<VipUser>(request(), response()), user);
+        Page<VipUser> page = vipUserService.findPage(new Page<VipUser>(request(), response()), user);
         attr("page", page);
         return "solidchoice/vipUserList";
     }
@@ -51,7 +51,7 @@ public class VipUserController extends BaseController {
         VipUser vipUser = new VipUser();
         vipUser.setId(id);
         vipUser.setUserStatus(userStatus);
-        userService.save(vipUser);
+        vipUserService.save(vipUser);
         addMessage(redirectAttributes, "修改用户状态信息成功");
         return "redirect:" + Global.getAdminPath() + "/solidChoice/vipUser/?repage";
     }
@@ -68,7 +68,7 @@ public class VipUserController extends BaseController {
     @RequiresPermissions("solidChoice:vipUser:view")
     @RequestMapping("detail")
     public String detail(String id) {
-        VipUser vipUser = userService.get(id);
+        VipUser vipUser = vipUserService.get(id);
         attr("vipUser",vipUser);
 
         //关注的人数量

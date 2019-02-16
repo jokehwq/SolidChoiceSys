@@ -31,7 +31,7 @@
         <mybatis.generator.configurationFile>${basedir}/src/main/resources/generatorConfig.xml
         </mybatis.generator.configurationFile>
         <mybatis.generator.overwrite>true</mybatis.generator.overwrite>
-        mybatis/mappings/solidchoice/BannerMapper.xml
+       	<!--  mybatis/mappings/solidchoice/BannerMapper.xml -->
     </properties>
     <dependencies>
         <!--mysql jdbc驱动 -->

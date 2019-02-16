@@ -28,6 +28,7 @@
 <body>
 <ul class="nav nav-tabs">
     <li class="active"><a href="${ctx}/bdxt/bdxtUser/">用户列表</a></li>
+    <li class="active"><a href="${ctx}/bdxt/bdxtActivity/form?id=${bdxtActivity.id}">活动信息<shiro:hasPermission name="bdxt:bdxtActivity:edit">${not empty bdxtActivity.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="bdxt:bdxtActivity:edit">查看</shiro:lacksPermission></a></li>
 </ul>
 <form:form id="searchForm" modelAttribute="bdxtUser" action="${ctx}/bdxt/bdxtUser/" method="post"
            class="breadcrumb form-search">

@@ -6,37 +6,36 @@ import java.util.Date;
 
 public class Topic  extends DataEntity<Topic> {
 
-    private String id;
 
-    private String userId;
+    private String userId; //用户ID
 
-    private String topicName;
+    private String topicName; //话题标题
 
-    private Integer topicType;
+    private Integer topicType; //话题类型
 
-    private String topicLabel;
+    private String topicLabel;	//话题标签
 
-    private Integer releaseForm;
+    private Integer releaseForm; // 发布形式（图片-10，纯文本-20）
 
-    private String note;
+    private String note;  //摘要-话题描述，内容
 
-    private Integer status;
+    private Integer status; // 状态（10-通过，20-不通过，禁用  30 审核中）
 
-    private String address;
+    private String address; //发布话题的位置
 
-    private String activityRules;
+    private String activityRules; //活动规则
+ 
+    private String integralMechanism; // 积分机制
 
-    private String integralMechanism;
+    private Integer isRecommend; //是否推荐
 
-    private Integer isRecommend;
+    private Date recommendTime; // 推荐时间
 
-    private Date recommendTime;
+    private Integer participants; 
 
-    private Integer participants;
+    private String imgUrl; //背景图片url
 
-    private String imgUrl;
-
-    private Integer isDel;
+    private Integer isDel; //是否删除（是-10，否-20）
 
     private Date createTime;
 

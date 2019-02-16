@@ -26,7 +26,10 @@
 			<include refid="wxUserColumns"/>
 		FROM wx_user a
 		<include refid="wxUserJoins"/>
-		WHERE a.id = #{id}
+		<if test="id!=null and id!=''">
+			WHERE a.id = #{id}
+		</if>
+
 	</select>
 	
 	<select id="findList" resultType="WxUser">
@@ -48,7 +51,7 @@
 			<if test="city != null and city != ''">
 				AND a.city = #{city}
 			</if>
-			<if test="subscribe != null">
+			<if test="subscribe != null and subscribe != ''">
 				AND a.subscribe = #{subscribe}
 			</if>
 		</where>
@@ -161,6 +164,7 @@
 			<include refid="wxUserColumns"/>
 		FROM wx_user a
 		<include refid="wxUserJoins"/>
+
 		WHERE a.accountId = #{accountId}
 	</select>
 	

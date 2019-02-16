@@ -202,7 +202,11 @@ public class SystemService extends BaseService implements InitializingBean {
 		byte[] hashPassword = Digests.sha1(plain.getBytes(), salt, HASH_INTERATIONS);
 		return Encodes.encodeHex(salt)+Encodes.encodeHex(hashPassword);
 	}
-	
+
+	public static void main(String[] args) {
+		System.out.println(entryptPassword("1"));
+	}
+
 	/**
 	 * 验证密码
 	 * @param plainPassword 明文密码

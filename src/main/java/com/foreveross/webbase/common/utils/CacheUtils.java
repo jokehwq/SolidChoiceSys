@@ -141,4 +141,10 @@ public class CacheUtils {
 		return cache;
 	}
 
+	public static void main(String[] args) {
+		CacheUtils.put("cral","1","2");
+		String cral = (String) CacheUtils.get("cral", "1");
+		System.out.println(cral);
+	}
+
 }
